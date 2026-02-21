@@ -106,7 +106,7 @@ Ahora. Aterrizaremos todos los conceptos con notacion concreta, para referirnos 
 
 > $L$ es alguna capa de la red exceptuando la primera.
 
-##### ¿Que hay de los pesos?
+#### ¿Que hay de los pesos?
 
 Bueno, debido a que en la conexion entre neuronas de capas consecutivas existe un peso asociado, se vuelve necesario introducir dos indices mas.
 
@@ -118,7 +118,7 @@ Donde el indice $i$ refiere la i-ésima neurona de la capa $L+1$ y $j$ la j-ési
 
 > Nota como esta notacion parece estar "al reves", porque $i$ denota neuronas de la capa a la que **llegan** los datos de la propagacion, mientras que $j$ denota neuronas de la capa de la que **salen** los datos de la propagacion. Esto se debe a que la mayoria de los problemas que enfrentamos en las redes neuronales residen en la retropropagacion, donde la informacion fluye hacia atras, por lo que a la hora de analizarla, resulta mas sencillo invertir los indices.
 
-##### ¿$L$?, ¿$L+1$?, ¿$L-1$? 
+#### ¿$L$?, ¿$L+1$?, ¿$L-1$? 
 
 Considero necesario detenernos brevemente a reflexionar sobre los índices de las capas. Usualmente, solo analizamos el flujo de la información entre dos capas adyacentes, dado que este razonamiento es recursivo y lo podemos aplicar a cuantos pares de capas consecutivas queramos.
 
