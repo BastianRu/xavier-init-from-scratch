@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Capitulo 0: El problema
+title: Capitulo 0
 ---
 
 # Capitulo 0: El problema 
