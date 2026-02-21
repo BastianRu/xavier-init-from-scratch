@@ -3,63 +3,60 @@ layout: default
 title: Capitulo 0
 ---
 
-# Capitulo 0: El problema
+# Capitulo 0: El problema 
+---
 
-## *Vanishing/Exploding Gradients*: Los Enemigos del perceptrón multicapa
+## *Vanishing/Exploding Gradients*: Los Enemigos del perceptron multicapa
 
-Como te mencioné en la introducción, seguramente has oído mucho de los problemas de "gradientes que explotan" y "desvanecimiento de gradientes", en inglés, *Exploding Gradients* y *Vanishing Gradients*, que causan una reducción del aprendizaje de la red neuronal y en los casos más graves, la muerte del mismo.
+Como te mencione en la introduccion, seguramente has oido mucho de los problemas de "gradientes que explotan" y "desvanecimiento de gradientes", en ingles, *Exploding Gradients* y *Vanishing Gradients*, que causan una reduccion del aprendizaje de la red neuronal y en los casos mas graves, la muerte del mismo. 
 
-Pero, **¿qué son realmente y qué los causa?**
+Pero, **¿que son realmente y que los causa?**
 
-Bueno, para responder a esta pregunta tenemos que analizar el flujo de los datos a través de la red, y entender las transformaciones que sufren, y cómo esto afecta en el aprendizaje, que será nuestro foco de análisis en los siguientes capítulos.
+Bueno, para responder a esta pregunta tenemos que analizar el flujo de los datos a traves de la red, y entender las transformaciones que sufren, y como esto afecta en el aprendizaje, que sera nuestro foco de analisis en los siguientes capitulos. 
 
+---
 ### Recordando la arquitectura MLP (Forward Pass)
 
-#### Preactivaciones
+#### Preactivaciones 
 
-Bien, sabemos que la operación fundamental que se ejecuta en un perceptrón es la siguiente:
+Bien, sabemos que la operacion fundamental que se ejecuta en un perceptron es la siguiente:
 
-$$
-y = w_1 x_1 + w_2 x_2 + w_3 x_3 + \cdots + w_n x_n
-$$
+$$ y = w_1x_1 + w_2x_2 + w_1x_1 + \cdots + w_nx_n $$
 
-> * Para efectos de simplicidad ignoraremos el sesgo $b$ (*bias*). Más adelante abordaremos una explicación detallada del porqué.
-> * $y$ también se conoce como la pre-activación $z$.
+> * Para efectos de simplicidad ignoraremos el sesgo $b$ (*bias*). Mas adelante abordaremos una explicacion detallada del porque.
+> * $y$ tambien se conoce como la pre-activacion $z$.
+ 
 
-Donde $w_i$ es el peso $i$ de la capa y $x_i$ la entrada $i$ a la capa, que viene de la anterior capa. Como cada salida de la capa anterior está conectada con cada perceptrón de la capa posterior, y cada conexión supone un peso, si tenemos $n$ perceptrones en la capa anterior, tendremos $n$ pesos para la capa posterior.
+Donde $w_i$ es el peso $i$ de la capa y $x_i$ la entrada $i$ a la capa, que viene de la anterior capa. Como cada salida de la capa anterior esta conectada con cada perceptron de la capa posterior, y cada conexion supone un peso, si tenemos $n$ perceptrones en la capa anterior, tendremos $n$ pesos para la capa posterior.
 
-Y la preactivación $y$ se define como la suma ponderada de los pesos $w_i$ de la capa y las entradas $x_i$ a la capa.
+Y la preactivacion $y$ se define como la suma ponderada de los pesos $w_i$ de la capa y las entradas $x_i$ a la capa. 
 
-> El Álgebra Lineal también nos aporta otras dos definiciones fantásticas:
-> 1. "$y$ es igual a la **combinación lineal** de las entradas $x_1, x_2, \dots, x_n$, donde los pesos $w_1, w_2, \dots, w_n$ son los escalares". Si revisas la definición de combinación lineal, te darás cuenta de que tiene mucho sentido, y de hecho, esta definición nos da la respuesta a por qué necesitamos funciones de activación en los perceptrones, ya que de no tenerlas, sin importar cuántas capas tengamos, solo estaríamos ejecutando una operación lineal a través de toda la red. Si el fenómeno que intentamos predecir en la realidad **no es lineal**, nuestro modelo jamás podrá aproximarlo. <br>
-> 3. "$y$ es el **producto punto** entre el vector de pesos $\mathbf{w}$ y el vector de entradas $\mathbf{x}$". Si agrupas los pesos $w_1, w_2, \dots, w_n$ y las entradas $x_1, x_2, \dots, x_n$ en vectores, al realizar su producto punto, obtendrás exactamente $y$. Al ser la más eficiente, esta es la forma en la que las computadoras la calculan. Y también es la lógica y notación que se usa en el código de Deep Learning real.
+> El Algebra Lineal tambien nos aporta otras dos definiciones fantasticas:
+> 1. "$y $ es igual la **combinacion lineal** de las entradas $x_1, x_2, ..., x_n$, donde los pesos $w_1, w_2, ..., w_n$ son los escalares". Si revisas la definicion de combinacion lineal, te daras cuenta de que tiene mucho sentido, y de hecho, esta definicion nos da la respuesta a por qué necesitamos funciones de activacion en los perceptrones, ya que de no tenerlas, sin importar cuantas capas tengamos, solo estariamos efecutando una operacion lineal a traves de toda la red. Si el fenomeno que intentamos predecir en la realidad **no es lineal**, nuestro modelo jamas podra aproximarlo. 
+> 2. "$y$ es el **producto punto** entre el vector de pesos $W$ y el vector de entradas $X$". Si agrupas los pesos $w_1, w_2, ..., w_n$ y las entradas $x_1, x_2, ..., x_n$ en vectores, al realizar su producto punto, obtendras exactamente $y$. Al ser la mas eficiente, esta es la forma en la que las computadoras la calculan. Y tambien es la logica y notacion que se usa en el codigo de Deep Learning real. 
 
-Ahora bien, de aquí en adelante, podemos también usar la notación simplificada con sumatoria, cuando convenga:
+Ahora bien, de aqui en adelante, podemos tambien usar la notacion simplificada con sumatoria, cuando convenga:
 
-$$
-y = \sum_{i=1}^{n} w_i x_i
-$$
+$$ y = \sum_{i = 1}^{n} w_ix_i $$
 
+----
 #### Activaciones
 
-El siguiente paso en un perceptrón después de calcular la preactivación, es aplicar una función no lineal a los datos, de modo que rompamos con la linealidad natural de las sumas ponderadas, y podamos darle al modelo la libertad de transformar los valores de los datos a gusto.
+El siguiente paso en un perceptron despues de calcular la preactivacion, es aplicar una funcion no lineal a los datos, de modo que rompamos con la linealidad natural de las sumas ponderadas, y podamos darle al modelo la libertad de transformar los valores de los datos a gusto.
 
-Si $f$ es una función no lineal, la activación en un perceptrón se define como:
+Si $$f$$ es una funcion no lineal, la activacion en un perceptron se define como:
 
-$$
-a = f(w_1 x_1 + w_2 x_2 + w_3 x_3 + \cdots + w_n x_n)
-$$
+$$ a = f(w_1x_1 + w_2x_2 + w_1x_1 + \cdots + w_nx_n) $$ 
 
-> En la práctica, no podemos usar cualquier función no lineal. Imagina que usamos la función $x^2$ como no-linealidad para nuestra red. Pero el fenómeno que queremos modelar aplica la transformación $x^3$ a los datos. Nuestro modelo jamás podrá aproximar $x^3$ por medio de cuadrados de combinaciones lineales dado que las activaciones finales serán polinomios con términos elevados a potencias pares $2, 4, 6, 8, \dots, 2n$, y para obtener un valor de la forma $x^3$ necesitas al menos un término de la forma $x^3$ en tu activación final.
+> En la practica, no podemos usar cualquier funcion no lineal. Imagina que usamos la funcion $$x^2$$ como no-linealidad para nuestra red. Pero el fenomeno que queremos modelar aplica la transformacion $$ x^3$$ a los datos. Nuestro modelo jamas podra aproximar $$x^3$$ por medio de cuadrados de combinaciones lineales dado que las activaciones finales seran polinomios con terminos elevados a potencias pares $2, 4, 6, 8,...,2n $, y para obtener un valor de la forma $x^3$ necesitas al menos un  termino de la forma $x^3$ en tu activacion final.
 
-Algunas de las funciones no lineales más famosas (y más usadas) hasta la fecha, por su capacidad de romper la linealidad y aproximar otras funciones de cualquier tipo son:
+Algunas de las funciones no lineales mas famosas (y mas usadas) hasta la fecha, por su capacidad de romper la linealidad y aproximar otras funciones de cualquier tipo son:
 
-- **Función Sigmoide**: $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
-- **Tangente Hiperbólica**: $$\tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}$$
-- **Función ReLU** (Rectified Linear Unit): $${ReLU}(x) = max(0, x)$$
+* Funcion Sigmoide: $$ \sigma(x) = \frac{1}{1+e^{-x}} $$
+* Tangente Hiperbolica: $$\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}} $$
+* Funcion ReLU (Rectified Linear Unit): $$ ReLU(x) = max(0, x)  $$
 
-
-Para este analisis, tomaremos como no-linealidad la funcion **Tangente Hiperbolica $$tanh$$**. 
+Para este analisis, tomaremos como no-linealidad la funcion **Tangente Hiperbolica $$tanh$$**.
 
 Ahora. El paso de la activacion tiene un impacto enorme (casi decisivo) en el proceso de aprendizaje de la red, llevado a cabo por el algoritmo de retro-propagacion (*backpropagation*).
 
@@ -83,6 +80,7 @@ Pero para hablar de una red neuronal, o mas precisamente, de un perceptron multi
 > Hay un debate muy grande sobre si la ultima capa deberia ser considerada o no como la ultima capa intermedia, dado que, aunque efectua una operacion de activacion, sus valores si poseen un significado, no como las capas ocultas. Esto depende del contexto y muchas veces no afecta el analisis.  
 
 El siguiente diagrama de ejemplo nos permite visualizar la estructura basica de un perceptron multicapa con una capa de entrada de 6 valores, dos capas intermedias con 4 y 3 perceptrones respectivamente, y una capa de salida con un unico valor de salida:
+        
 <br>
 <p align="center">
   <img src="https://raw.githubusercontent.com/ledell/sldm4-h2o/master/mlp_network.png" width="480" height="200" alt="Perceptron-Multi-capa">
@@ -98,13 +96,79 @@ Y por consecuente:
 
 2. **El numero de outpus de una capa, determina el numero de pesos para cada neurona de la siguiente capa**
 
-> Cada neurona de la segunda capa, recibe 6 inputs, y como cada conexion de la primera capa hacia la segunda implica un peso, cada neurona en la segunda capa tiene 6 pesos. En total, la segunda capa tiene $$4 \cdot 6 = 24$$ pesos.
+> Cada neurona de la segunda capa, recibe 6 inputs, y como cada conexion de la primera capa hacia la segunda implica un peso, cada neurona en la segunda capa tiene 6 pesos. En total, la segunda capa tiene $$4 
+ \text{ neuronas}\cdot 6 \text{ pesos } = 24 \text{ pesos} $$.
 
-Ahora. Aterrizaremos todos los conceptos con notacion concreta, para referirnos a ellos de una forma mas rapida. 
+Ahora. Aterrizaremos todos los conceptos con notacion concreta, para referirnos a ellos de una forma mas rapida:
  
+* Nos referiremos a una **pre-activacion** en la capa $L$ como: $z^{(L)}$
+* Nos referiremos a una **activacion** en la capa $L$ como: $a^{(L)}$
 
-----
+> $L$ es alguna capa de la red exceptuando la primera.
+
+##### ¿Que hay de los pesos?
+
+Bueno, debido a que en la conexion entre neuronas de capas consecutivas existe un peso asociado, se vuelve necesario introducir dos indices mas.
+
+> Debo advertirte que a partir de aqui la notacion se vuelve mas robusta, asi que no resultaria raro en asboluto si necesitas varias re-lecturas para asimilarla.
+
+* A un peso especifico entre alguna neurona de la capa $L$ y alguna otra neurona de la capa siguiente $L+1$ lo denotamos como: $ w_{ij}  $
+
+Donde el indice $i$ refiere la i-ésima neurona de la capa $L+1$ y $j$ la j-ésima neurona de la capa $L$.
+
+> Nota como esta notacion parece estar "al reves", porque $i$ denota neuronas de la capa a la que **llegan** los datos de la propagacion, mientras que $j$ denota neuronas de la capa de la que **salen** los datos de la propagacion. Esto se debe a que la mayoria de los problemas que enfrentamos en las redes neuronales residen en la retropropagacion, donde la informacion fluye hacia atras, por lo que a la hora de analizarla, resulta mas sencillo invertir los indices.
+
+##### ¿$L$?, ¿$L+1$?, ¿$L-1$? 
+
+Considero necesario detenernos brevemente a reflexionar sobre los índices de las capas. Usualmente, solo analizamos el flujo de la información entre dos capas adyacentes, dado que este razonamiento es recursivo y lo podemos aplicar a cuantos pares de capas consecutivas queramos.
+
+Si $L$ es la capa sobre la que estamos razonando:
+
+* $L+1$ es la capa inmediatamente posterior a $L$.
+* $L-1$ es la capa inmediatamente anterior a $L$.
+
+Dado que nuestro análisis se limita a capas adyacentes, podemos elegir estudiar la pareja $(L, L+1)$ o bien $(L-1, L)$. En este articulo, utilizaremos unica y exclusivamente $(L, L+1)$, siendo $L$ la capa anterior a $L+1$.
+
+Entonces, con todo esto en mente, podemos re-escribir nuestra definicion de activacion para una neurona $i$ de la capa $L+1$ como:
+
+$$ a_i^{(L+1)} = f(w_{i1}^{(L+1)}a_1^{(L)} + w_{i2}^{(L+1)}a_2^{(L)} + \cdots + w_{ij}^{(L+1)} a_{j}^{(L)})  $$
+
+Donde $j = 1, 2, 3, ..., n_{in}$ ($n_{in} = \text{numero de entradas a cada neurona de la capa } L+1 $)
+
+> Recuerda las relaciones entre capas que te mencione!.
+
+Es evidente como la notacion se vuelve cada vez mas engorrosa de leer, por eso, usualmente conviene usar sumatorias:
+
+$$ a_i^{(L+1)} = f( \sum_{j = 1}^{n_{in}} w_{ij}^{(L+1)} a_j^{(L)} ) $$
+
+> No olvides que la pre-activacion sigue existiendo: $ z_i^{(L+1)} = \sum_{j = 1}^{n_{in}} w_{ij}^{(L+1)} a_j^{(L)} $, por lo que, $ a_i^{(L+1)} = f( z_i^{(L+1)})$.
+
+Bien, con todo esto estamos listos para adentrarnos en la propagacion hacia atras, que es donde verdaderamente se encuentra la explicacion a nuestros problemas. 
+
+---
 ### Recordando la arquitectura MLP (Backward Pass)
+
+Trabajo en Progreso...
+
+---
+### Recordando la arquitectura MLP (Backward Pass)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
