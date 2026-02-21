@@ -8,3 +8,6 @@ description: "A Journey into the Core of Xavier Initialization from the math fou
 markdown: kramdown
 highlighter: rouge
 
+header_pages:
+  - es/Capitulo-0.md
+  - en/Chapter-0.md

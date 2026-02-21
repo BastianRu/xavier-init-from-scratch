@@ -31,8 +31,8 @@ Donde $w_i$ es el peso $i$ de la capa y $x_i$ la entrada $i$ a la capa, que vien
 Y la preactivación $y$ se define como la suma ponderada de los pesos $w_i$ de la capa y las entradas $x_i$ a la capa.
 
 > El Álgebra Lineal también nos aporta otras dos definiciones fantásticas:
-> 1. "$y$ es igual a la **combinación lineal** de las entradas $x_1, x_2, \dots, x_n$, donde los pesos $w_1, w_2, \dots, w_n$ son los escalares". Si revisas la definición de combinación lineal, te darás cuenta de que tiene mucho sentido, y de hecho, esta definición nos da la respuesta a por qué necesitamos funciones de activación en los perceptrones, ya que de no tenerlas, sin importar cuántas capas tengamos, solo estaríamos ejecutando una operación lineal a través de toda la red. Si el fenómeno que intentamos predecir en la realidad **no es lineal**, nuestro modelo jamás podrá aproximarlo.
-> 2. "$y$ es el **producto punto** entre el vector de pesos $\mathbf{w}$ y el vector de entradas $\mathbf{x}$". Si agrupas los pesos $w_1, w_2, \dots, w_n$ y las entradas $x_1, x_2, \dots, x_n$ en vectores, al realizar su producto punto, obtendrás exactamente $y$. Al ser la más eficiente, esta es la forma en la que las computadoras la calculan. Y también es la lógica y notación que se usa en el código de Deep Learning real.
+> 1. "$y$ es igual a la **combinación lineal** de las entradas $x_1, x_2, \dots, x_n$, donde los pesos $w_1, w_2, \dots, w_n$ son los escalares". Si revisas la definición de combinación lineal, te darás cuenta de que tiene mucho sentido, y de hecho, esta definición nos da la respuesta a por qué necesitamos funciones de activación en los perceptrones, ya que de no tenerlas, sin importar cuántas capas tengamos, solo estaríamos ejecutando una operación lineal a través de toda la red. Si el fenómeno que intentamos predecir en la realidad **no es lineal**, nuestro modelo jamás podrá aproximarlo. <br>
+> 3. "$y$ es el **producto punto** entre el vector de pesos $\mathbf{w}$ y el vector de entradas $\mathbf{x}$". Si agrupas los pesos $w_1, w_2, \dots, w_n$ y las entradas $x_1, x_2, \dots, x_n$ en vectores, al realizar su producto punto, obtendrás exactamente $y$. Al ser la más eficiente, esta es la forma en la que las computadoras la calculan. Y también es la lógica y notación que se usa en el código de Deep Learning real.
 
 Ahora bien, de aquí en adelante, podemos también usar la notación simplificada con sumatoria, cuando convenga:
 
@@ -57,7 +57,9 @@ Algunas de las funciones no lineales más famosas (y más usadas) hasta la fecha
 - **Función Sigmoide**: $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
 - **Tangente Hiperbólica**: $$\tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}$$
 - **Función ReLU** (Rectified Linear Unit): $${ReLU}(x) = max(0, x)$$
-Para este analisis, tomaremos como no-linealidad la funcion **Tangente Hiperbolica $$tanh$$**.
+
+
+Para este analisis, tomaremos como no-linealidad la funcion **Tangente Hiperbolica $$tanh$$**. 
 
 Ahora. El paso de la activacion tiene un impacto enorme (casi decisivo) en el proceso de aprendizaje de la red, llevado a cabo por el algoritmo de retro-propagacion (*backpropagation*).
 
@@ -81,12 +83,12 @@ Pero para hablar de una red neuronal, o mas precisamente, de un perceptron multi
 > Hay un debate muy grande sobre si la ultima capa deberia ser considerada o no como la ultima capa intermedia, dado que, aunque efectua una operacion de activacion, sus valores si poseen un significado, no como las capas ocultas. Esto depende del contexto y muchas veces no afecta el analisis.  
 
 El siguiente diagrama de ejemplo nos permite visualizar la estructura basica de un perceptron multicapa con una capa de entrada de 6 valores, dos capas intermedias con 4 y 3 perceptrones respectivamente, y una capa de salida con un unico valor de salida:
-##
+<br>
 <p align="center">
   <img src="https://raw.githubusercontent.com/ledell/sldm4-h2o/master/mlp_network.png" width="480" height="200" alt="Perceptron-Multi-capa">
 </p>
 
-##
+<br>
 Puedes notar dos relaciones muy importante entre capas:
 1.  **El numero de outputs (activaciones) de una capa, determina el numero de inputs para cada neurona de la siguiente capa, o lo que es lo mismo, el numero de inputs a la siguiente capa**.
 
