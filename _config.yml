@@ -6,3 +6,4 @@ description: "A Journey into the Core of Xavier Initialization from the math fun
 google_analytics: 
 show_downloads: false
 mathjax: true
+math: kramdown
