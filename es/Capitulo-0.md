@@ -56,7 +56,7 @@ Algunas de las funciones no lineales más famosas (y más usadas) hasta la fecha
 
 - **Función Sigmoide**: $$\sigma(x) = \frac{1}{1 + e^{-x}}$$
 - **Tangente Hiperbólica**: $$\tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}}$$
-- **Función ReLU** (Rectified Linear Unit): $$\operatorname{ReLU}(x) = \max(0, x)$$
+- **Función ReLU** (Rectified Linear Unit): $${ReLU}(x) = max(0, x)$$
 Para este analisis, tomaremos como no-linealidad la funcion **Tangente Hiperbolica $$tanh$$**.
 
 Ahora. El paso de la activacion tiene un impacto enorme (casi decisivo) en el proceso de aprendizaje de la red, llevado a cabo por el algoritmo de retro-propagacion (*backpropagation*).
