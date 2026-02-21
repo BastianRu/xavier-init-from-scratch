@@ -1,16 +1,26 @@
-<!-- KaTeX CSS y JS unsafe-eval -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5SLF1/0J9a9VSncWpO83i1EUvsfFz8wAN3uKM/2d8zF5bC" crossorigin="anonymous">
+<!-- KaTeX para renderizar LaTeX en GitHub Pages (CSP-friendly) -->
+<link rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" 
+      integrity="sha384-nB0miv6/jRmo5SLF1/0J9a9VSncWpO83i1EUvsfFz8wAN3uKM/2d8zF5bC" 
+      crossorigin="anonymous">
 
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkKLxaEwKk8+ijO6oWgt7z6o2x3mKq+8rXqG6X5Uo9sQdX6gZ2v3gZ5gZ5gZ" crossorigin="anonymous"></script>
+<script defer 
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" 
+        integrity="sha384-7zkKLxaEwKk8+ijO6oWgt7z6o2x3mKq+8rXqG6X5Uo9sQdX6gZ2v3gZ5gZ5gZ" 
+        crossorigin="anonymous"></script>
 
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
-    onload="renderMathInElement(document.body, {
-      delimiters: [
-        {left: '$$    ', right: '    $$', display: true},
-        {left: '\$$   ', right: '\   $$', display: true},
-        {left: '$$   ', right: '   $$', display: false},
-        {left: '\$$   ', right: '\   $$', display: false}
-      ],
-      throwOnError : false
-    });">
+<script defer 
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" 
+        integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" 
+        crossorigin="anonymous"
+        onload="renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\\[', right: '\\]', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false}
+          ],
+          throwOnError: false,
+          strict: 'ignore'
+        });">
 </script>
