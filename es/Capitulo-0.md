@@ -21,7 +21,7 @@ Bueno, para responder a esta pregunta tenemos que analizar el flujo de los datos
 
 Bien, sabemos que la operacion fundamental que se ejecuta en un perceptron es la siguiente:
 
-$$ y = w_1x_1 + w_2x_2 + w_1x_1 + \cdots + w_nx_n $$
+$$ y = w_1x_1 + w_2x_2 + w_3x_3 + \cdots + w_nx_n $$
 
 > * Para efectos de simplicidad ignoraremos el sesgo $b$ (*bias*). Mas adelante abordaremos una explicacion detallada del porque.
 > * $y$ tambien se conoce como la pre-activacion $z$.
@@ -46,7 +46,7 @@ El siguiente paso en un perceptron despues de calcular la preactivacion, es apli
 
 Si $$f$$ es una funcion no lineal, la activacion en un perceptron se define como:
 
-$$ a = f(w_1x_1 + w_2x_2 + w_1x_1 + \cdots + w_nx_n) $$ 
+$$ a = f(w_1x_1 + w_2x_2 + w_3x_3 + \cdots + w_nx_n) $$ 
 
 > En la practica, no podemos usar cualquier funcion no lineal. Imagina que usamos la funcion $$x^2$$ como no-linealidad para nuestra red. Pero el fenomeno que queremos modelar aplica la transformacion $$ x^3$$ a los datos. Nuestro modelo jamas podra aproximar $$x^3$$ por medio de cuadrados de combinaciones lineales dado que las activaciones finales seran polinomios con terminos elevados a potencias pares $2, 4, 6, 8,...,2n $, y para obtener un valor de la forma $x^3$ necesitas al menos un  termino de la forma $x^3$ en tu activacion final.
 
@@ -149,9 +149,6 @@ Bien, con todo esto estamos listos para adentrarnos en la propagacion hacia atra
 ### Recordando la arquitectura MLP (Backward Pass)
 
 Trabajo en Progreso...
-
----
-### Recordando la arquitectura MLP (Backward Pass)
 
 
 
