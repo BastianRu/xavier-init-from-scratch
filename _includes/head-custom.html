@@ -1,18 +1,17 @@
-<!-- MathJax to render LaTeX across the site -->
+<!-- MathJax v3 para renderizar LaTeX -->
 <script>
-  MathJax = {
-    tex: {
-      inlineMath: [['$$   ', '   $$'], ['\$$   ', '\   $$']],
-      displayMath: [['$$    ', '    $$'], ['\$$   ', '\   $$']],
-      processEscapes: true,  
-      packages: {'[+]': ['ams']}  
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    }
-  };
+MathJax = {
+  tex: {
+    inlineMath: [['$$   ', '   $$'], ['\$$   ', '\   $$']],
+    displayMath: [['$$    ', '    $$'], ['\$$   ', '\   $$']],
+    processEscapes: true,
+    packages: {'[+]': ['ams', 'noerrors']}
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  }
+};
 </script>
 <script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-
