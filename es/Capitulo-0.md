@@ -1,3 +1,7 @@
+---
+layout: default
+title: Capitulo 0: El problema
+---
 
 # Capitulo 0: El problema 
 ---
