@@ -39,3 +39,6 @@ He diseñado esta demostracion para que sea lo más accesible posible, pero para
 - Derivadas Parciales: No necesitas ser un experto, pero sí entender que podemos derivar respecto a una variable manteniendo las otras constantes.
 
 Si cumples con esto, el resto lo construiremos aqui. Definiremos cada propiedad estadística nueva justo antes de que la necesitemos para el siguiente paso de la demostración. Asimismo, si ya dominas los conceptos sientete libre de saltarte a las secciones de interes. 
+
+
+[Capitulo 0: El problema](https://bastianru.github.io/xavier-init-from-scratch/es/Capitulo-0)
