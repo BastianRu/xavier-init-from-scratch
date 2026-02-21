@@ -5,5 +5,9 @@ title: "A Journey into the Core of Xavier Initialization"
 description: "A Journey into the Core of Xavier Initialization from the math fundations"
 google_analytics: 
 show_downloads: false
-mathjax: true
-math: kramdown
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
