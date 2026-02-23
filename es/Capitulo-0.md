@@ -148,9 +148,53 @@ Bien, con todo esto estamos listos para adentrarnos en la propagacion hacia atra
 ---
 ### Recordando la arquitectura MLP (Backward Pass)
 
-Trabajo en Progreso...
+#### La funcion de perdida (*Loss Function*)
+
+La literatura plantea la necesidad de una medida de que tan erroneos son los datos predichos por nuestro modelo con relacion a los datos reales o esperados.
+Y aqui es donde entran las funciones de coste o de perdida. Las hay de varios tipos pero basicamente todas entregan un resultado de interes, un valor que precisamos minimizar tanto como sea posible, ya que si este valor es cercano a 0, nos encontraremos con un modelo que aproxima muy bien los datos de entrada a los datos que nosotros consideramos como "reales" o "verdaderos". A este proceso se le llama, optimizacion de la funcion de perdida.
+
+> Por muy eficaz que sea nuestro algoritmo de entrenamiento, en la practica, no siempre podremos lograr que la funcion de perdida sea 0. Por ejemplo, en modelos de lenguaje modernos, que, en base a una secuencia de palabras predicen la siguiente palabra de la frase, los datos de entrenamiento son secuencias de palabras junto con la **posible** siguente palabra. Pero en el lenguaje, una secuencia de palabras puede tener muchas posibles siguientes palabras, lo que resulta en que en los datos de entrenamiento exitan secuencias de entrada, que tienen como posible dato de salida muchas palabras diferentes. <br><br>
+Le estariamos comunicando al modelo que hay varias "respuestas" validas a una sola pregunta. Esto no siempre es malo, al haber varias opciones posibles, nace la **creatividad**, aunque este termino es mas bien de modelos generativos, preferiria decir que nuestro modelo es capaz de **generalizar** sobre los datos. <br><br>
+> Ironicamente...,la imposibilidad de que el error sea 0, es lo que hace que la IA generativa sea util en el mundo real.
+
+Para esta derivacion, no sera necesario definir una funcion de perdida concreta, siendo que, las funciones de perdida comparten suficientes caracteristicas en comun que podemos extraer para el analisis:
+
+* Una funcion de perdida es funcion de la activacion final $a^{(L+1)}$ (*output* de la red) y del valor esperado $y$ (No lo confundas con el $y$ del forward!).
+>Debo aclarar que pueden existir MLPs en las que la ultima capa tenga mas de una neurona, es decir, mas de una activacion final, para esos casos la funcion de perdida es funcion de la **media** de las perdidas de cada neurona con respecto a los valores esperados $y_i$ por separado, es decir:
+$$ L= \frac{1}{m} \sum_{i=1}^{m} l(a_i^{(L+1)}, y_i)$$. Para simplificar la notacion en este aritculo, asumiremos $m=1$.
+* Una funcion de perdida es continua y diferenciable en el dominio relevante.
+
+Como las activaciones de una capa son funciones de los pesos de la capa y de las activaciones de la capa anterior, y a su vez, esas activaciones son funciones de los pesos de la capa anterior, y asi sucesivamente, la funcion de costo termina siendo funcion de todos los pesos de la red, de las entradas de la red, y de los valores esperados.
+
+Recordemos que **todos** los pesos a lo largo de la red son parametros entrenables, lo que quiere decir que su valor es alterable, a diferencia de los valores de entrada y los valores esperados, que no lo son. Por lo tanto, tratamos a la función de costo como una funcion cuyas unicas variables independientes son los pesos, ya que son los unicos valores que tenemos el poder de alterar para minimizar el error.
+
+Si agrupamos todos los pesos de una capa en una matriz que llamaremos $W^{(L)}$, en donde cada columna $i$ contenga los pesos de una neurona $i$. 
+Entonces podemos agrupar todos los pesos de la red neuronal de la siguiente manera:
+
+$$ \theta = \mathrm{\{W^{(l)}}\}_{l=1}^{k}  $$
+
+>Seguramente no conocias esta notacion, porque fue creada por la comunidad de Deep Learning para ser práctica.
+
+Donde $\theta$ se conoce como el conjunto de parmetros y agrupa todas las matrices de pesos $W^{(L)}$ de la capa $1, 2, 3, \cdots, k$. Y $k$ representa la capa de salida de la red.
+
+Entonces $L$ es funcion de $(\theta)$: $L(\theta)$.
 
 
+#### El vector gradiente
+
+Bien, esta claro que la funcion de costo mide que tan "mal" predice nuestra red. Pero, ¿y como minimizamos realmente la perdida?.
+
+El calculo vectorial nos aporta la respuesta. Si tenemos una funcion $f$ de varias variables $x_1, x_2, x_3, \cdots, x_n$, el **vector gradiente** de esa funcion nos indica la direccion de maximo crecimiento de la funcion. Es decir, que forma tienen los cambios en $x_1, x_2, x_3, \cdots, x_i$ que producen la maxima taza de aumento en el valor de $f$. 
+
+El vector gradiente de $f$ se define como:
+
+$$ \nabla f = \left[ \frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \frac{\partial f}{\partial x_3}, \cdots, \frac{\partial f}{\partial x_n}  \right] $$
+
+Donde $\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \frac{\partial f}{\partial x_3}, \cdots, \frac{\partial f}{\partial x_n}$ son las **derivadas parciales** de $f$ con respecto a $x_1, x_2, x_3, \cdots, x_i$.
+
+> Recuerda que, para el vector gradiente, al igual que en las derivadas normales, solo obtenemos un valor numerico cuando evaluamos la funcion en un punto concreto, es decir, asignamos valores a $x_1, x_2, x_3, \cdots, x_n$. Esto es importante porque la direccion de maximo crecimiento de la funcion depende de los puntos en los que este evaluada. Intuitivamente, imagina que estas subiendo una montaña desde el norte, y un amigo tuyo esta subiendola tambien pero desde el sur, si llamas a tu amigo y le preguntas hacia que direccion esta la cima, te respondera que norte, porque desde su perspectiva es correcto, sin embargo para ti, la cima se encuentra hacia el sur. Para el vector gradiente ocurre exactamente lo mismo.
+
+Trabajo en progreso...
 
 
 
