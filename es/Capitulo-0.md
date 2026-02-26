@@ -153,7 +153,7 @@ Bien, con todo esto estamos listos para adentrarnos en la propagacion hacia atra
 La literatura plantea la necesidad de una medida de que tan erroneos son los datos predichos por nuestro modelo con relacion a los datos reales o esperados.
 Y aqui es donde entran las funciones de coste o de perdida. Las hay de varios tipos pero basicamente todas entregan un resultado de interes, un valor que precisamos minimizar tanto como sea posible, ya que si este valor es cercano a 0, nos encontraremos con un modelo que aproxima muy bien los datos de entrada a los datos que nosotros consideramos como "reales" o "verdaderos". A este proceso se le llama, optimizacion de la funcion de perdida.
 
-> Por muy eficaz que sea nuestro algoritmo de entrenamiento, en la practica, no siempre podremos lograr que la funcion de perdida sea 0. Por ejemplo, en modelos de lenguaje modernos, que, en base a una secuencia de palabras predicen la siguiente palabra de la frase, los datos de entrenamiento son secuencias de palabras junto con la **posible** siguente palabra. Pero en el lenguaje, una secuencia de palabras puede tener muchas posibles siguientes palabras, lo que resulta en que en los datos de entrenamiento exitan secuencias de entrada, que tienen como posible dato de salida muchas palabras diferentes. <br><br>
+> Por muy eficaz que sea nuestro algoritmo de entrenamiento, en la practica, no siempre podremos lograr que la funcion de perdida sea 0. Por ejemplo, en modelos de lenguaje modernos, que, en base a una secuencia de palabras predicen la siguiente palabra de la frase, los datos de entrenamiento son secuencias de palabras junto con la **posible** siguente palabra. Pero en el lenguaje, una secuencia de palabras puede tener muchas posibles siguientes palabras, lo que resulta en que en los datos de entrenamiento existan secuencias de entrada, que tienen como posible dato de salida muchas palabras diferentes. <br><br>
 Le estariamos comunicando al modelo que hay varias "respuestas" validas a una sola pregunta. Esto no siempre es malo, al haber varias opciones posibles, nace la **creatividad**, aunque este termino es mas bien de modelos generativos, preferiria decir que nuestro modelo es capaz de **generalizar** sobre los datos. <br><br>
 > Ironicamente...,la imposibilidad de que el error sea 0, es lo que hace que la IA generativa sea util en el mundo real.
 
@@ -194,9 +194,26 @@ Donde $\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \frac{\
 
 > Recuerda que, para el vector gradiente, al igual que en las derivadas normales, solo obtenemos un valor numerico cuando evaluamos la funcion en un punto concreto, es decir, asignamos valores a $x_1, x_2, x_3, \cdots, x_n$. Esto es importante porque la direccion de maximo crecimiento de la funcion depende de los puntos en los que este evaluada. Intuitivamente, imagina que estas subiendo una montaña desde el norte, y un amigo tuyo esta subiendola tambien pero desde el sur, si llamas a tu amigo y le preguntas hacia que direccion esta la cima, te respondera que norte, porque desde su perspectiva es correcto, sin embargo para ti, la cima se encuentra hacia el sur. Para el vector gradiente ocurre exactamente lo mismo.
 
-Trabajo en progreso...
+Ahora. Como $L$ es funcion de $\theta$, que es conjunto de todas las matrices de pesos de la red. Por lo que en efecto, podemos encontrar el vector gradiente para $L$:
 
+$$ \nabla L = \left[  \frac{\partial L}{\partial w_1}, \frac{\partial L}{\partial w_2}, \frac{\partial L}{\partial w_3}, \cdots, \frac{\partial L}{\partial w_N}  \right]  $$
 
+Donde $N$ es el numero de parametros en total de la red.
+
+Pero, nota como hay algo extraño aqui, el vector gradiente nos indicara la direccion (es decir como modificar el valor de los pesos) para obtener el maximo crecimiento de la funcion, es decir aumentar la funcion de perdida, pero esto es precisamente lo contrario a lo que queremos!. Lo que buscamos es optimizar la funcion de perdida, es decir minimizarla, no aumentarla. Bueno, por ello el calculo vectorial viene otra vez al rescate y nos da la solucion:
+
+**Si $\nabla f$ nos indica la direccion de maximo crecimiento de $f$, $-\nabla f$ nos da la direccion de maximo descenso de $f.$**
+
+Interpolando, $-\nabla L$ nos indica como debemos modificar los valores de los pesos para reducir nuestra funcion de perdida.
+
+> * Viendolo algebraicamente, si pudieramos escribir la funcion de perdida como una ecuacion gigante en donde las constantes son los valores de entrada a la red mas los valores de salida esperados, y las incognitas fueran los pesos, estariamos tratando de encontrar todos los valores de esos pesos tales que al reemplazarlos en la ecuacion, sea 0. Y digo tratando, porque ya sabes que en la practica, tratamos de minimizar ese numero tanto como sea posible. 
+> * Hace rato te mencione una de las razones intuitivas por las cuales en algunos modelos es posible que jamas se alcance un valor de 0 absoluto para la funcion de perdida. Bueno, con el gradiente como herramienta, hay otra justificacion para ello. Si recuerdas calculo diferencial, sabras que una funcion puede tener varios **valores minimos locales**, que son puntos en donde la funcion parece decrecer hasta cierto punto, y a partir de ahi, comienza a crecer otra vez, dando la falsa impresion de que ese es el valor minimo absoluto que puede tomar la funcion en todo su dominio. La consecuencia de esto en nuestro sistema es que nuestro vector gradiente nos guiara hasta el minimo local mas cercano que se encuentre, pero no es garantia de que ese sea el **minimo global** o absoluto de la funcion, y una vez llegados a ese punto (o muy cerca de el), como el negativo del gradiente solo apunta a la direccion de maximo decenso, y ya no podemos decender mas, el entramiento morira en ese punto. En altas dimensionalidades este problema es incluso mas activo.
+
+#### La regla de la cadena 
+
+Las componentes del vector gradiente son derivadas, concretamente, derivadas parciales respecto a cada peso de la red. Como se calculan exactamente?
+
+Trabajo en Progreso...
 
 
 
