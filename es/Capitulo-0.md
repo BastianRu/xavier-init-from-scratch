@@ -250,6 +250,21 @@ La derivada parcial de la funcion de perdida $\mathcal{L}$ con respecto a cierto
 
 $$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \frac{\partial \mathcal{L} }{\partial a_j^{L+1}} \cdot \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} } \cdot \frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1} }  $$
 
+Ahora, hay algo que omiti al hablarte la funcion de perdida. En la realidad, los modelos se entrenan con base a un conjunto de datos de entrenamiento. Si queremos que nuestro modelo sea capaz de predecir correctamente sin importar la diversidad de los datos de entrada, necesitamos entrenarlo mostrandole tambien diversos ejemplos, tantos como sea necesario para cubrir la gran mayoria de casos posibles del fenomeno. Matematicamente, esto se logra optimizando sobre el promedio de todas las perdidas de cada uno de los ejemplos de entrenamiento.
+
+Entonces si queremos obtener el vector gradiente "verdadero" de nuestro modelo, por cada derivada parcial con respecto a un peso, tenemos que obtener el promedio sobre todas las derivadas parciales de cada uno de los ejemplos por separado. Es decir:
+
+$$ \frac{\partial \mathcal{L}_T }{\partial w_{ij}^{L+1}} = \frac{1}{N} \sum_{k=1}^{N} \frac{\partial \mathcal{L_k} }{\partial w_{ij}^{L+1}}  $$
+
+Donde $N$ es el numero total de ejemplos en nuestro conjunto de datos de entrenamiento.
+
+Nuestro vector gradiente total se veria asi:
+
+$$ \nabla \mathcal{L} = \begin{bmatrix} \frac{\partial \mathcal{L}_T }{\partial w_{1}} = \frac{1}{N} \sum_{k=1}^{N} \frac{\partial \mathcal{L_k} }{\partial w_{1}} \\ \frac{\partial \mathcal{L}_T }{\partial w_{2}} = \frac{1}{N} \sum_{k=1}^{N} \frac{\partial \mathcal{L_k} }{\partial w_{2}}\\ \vdots \\ \frac{\partial \mathcal{L}_T }{\partial w_{n}} = \frac{1}{N} \sum_{k=1}^{N} \frac{\partial \mathcal{L_k} }{\partial w_{n}} \end{bmatrix} $$ 
+
+$n$ es el numero total de pesos en la red.
+
+Sin embargo, en el proceso de *backprop* de todos los ejemplos de entrenamiento, los gradientes se calculan exactamente igual, por eso para este analisis tomaremos $N = 1$. 
 
 
 
