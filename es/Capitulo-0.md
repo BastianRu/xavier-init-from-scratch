@@ -161,7 +161,7 @@ Para esta derivacion, no sera necesario definir una funcion de perdida concreta,
 
 * Una funcion de perdida es funcion de la activacion final $a^{(L+1)}$ (*output* de la red) y del valor esperado $y$ (No lo confundas con el $y$ del forward!).
 >Debo aclarar que pueden existir MLPs en las que la ultima capa tenga mas de una neurona, es decir, mas de una activacion final, para esos casos la funcion de perdida es funcion de la **media** de las perdidas de cada neurona con respecto a los valores esperados $y_i$ por separado, es decir:
-$$ L= \frac{1}{m} \sum_{i=1}^{m} l(a_i^{(L+1)}, y_i)$$. Para simplificar la notacion en este aritculo, asumiremos $m=1$.
+$$ \mathcal{L} = \frac{1}{m} \sum_{i=1}^{m} l(a_i^{(L+1)}, y_i)$$. Para simplificar la notacion en este aritculo, asumiremos $m=1$.
 * Una funcion de perdida es continua y diferenciable en el dominio relevante.
 
 Como las activaciones de una capa son funciones de los pesos de la capa y de las activaciones de la capa anterior, y a su vez, esas activaciones son funciones de los pesos de la capa anterior, y asi sucesivamente, la funcion de costo termina siendo funcion de todos los pesos de la red, de las entradas de la red, y de los valores esperados.
@@ -177,7 +177,7 @@ $$ \theta = \mathrm{\{W^{(l)}}\}_{l=1}^{k}  $$
 
 Donde $\theta$ se conoce como el conjunto de parmetros y agrupa todas las matrices de pesos $W^{(L)}$ de la capa $1, 2, 3, \cdots, k$. Y $k$ representa la capa de salida de la red.
 
-Entonces $L$ es funcion de $(\theta)$: $L(\theta)$.
+Entonces la perdida $\mathcal{L}$ es funcion de $(\theta)$: $\mathcal{L}(\theta)$.
 
 
 #### El vector gradiente
@@ -194,9 +194,13 @@ Donde $\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \frac{\
 
 > Recuerda que, para el vector gradiente, al igual que en las derivadas normales, solo obtenemos un valor numerico cuando evaluamos la funcion en un punto concreto, es decir, asignamos valores a $x_1, x_2, x_3, \cdots, x_n$. Esto es importante porque la direccion de maximo crecimiento de la funcion depende de los puntos en los que este evaluada. Intuitivamente, imagina que estas subiendo una montaña desde el norte, y un amigo tuyo esta subiendola tambien pero desde el sur, si llamas a tu amigo y le preguntas hacia que direccion esta la cima, te respondera que norte, porque desde su perspectiva es correcto, sin embargo para ti, la cima se encuentra hacia el sur. Para el vector gradiente ocurre exactamente lo mismo.
 
-Ahora. Como $L$ es funcion de $\theta$, que es conjunto de todas las matrices de pesos de la red. Por lo que en efecto, podemos encontrar el vector gradiente para $L$:
+Ahora. Como $\mathcal{L}$ es funcion de $\theta$, que es conjunto de todas las matrices de pesos de la red. Por lo que en efecto, podemos encontrar el vector gradiente para $\mathcal{L}$:
 
-$$ \nabla L = \left[  \frac{\partial L}{\partial w_1}, \frac{\partial L}{\partial w_2}, \frac{\partial L}{\partial w_3}, \cdots, \frac{\partial L}{\partial w_N}  \right]  $$
+$$ \nabla \mathcal{L} = \left[  \frac{\partial \mathcal{L} }{\partial w_1}, \frac{\partial \mathcal{L}}{\partial w_2}, \frac{\partial \mathcal{L}}{\partial w_3}, \cdots, \frac{\partial \mathcal{L}}{\partial w_N}  \right]  $$
+
+Con $N$ como el numero **total** de pesos en la red.
+
+>Cada derivada parcial de este vector nos indica como cambia la funcion de perdida $\mathcal{L}$ con respecto a cada peso en especifico. Por ejemplo $\frac{\partial \mathcal{L}}{\partial w_1}$ nos indica que tan "sensible" es $\mathcal{L}$ con respecto a $w_1$, responde a la pregunta: ¿Si modifico un poco el valor de $w_1$, que tanto cambia la perdida?.
 
 Donde $N$ es el numero de parametros en total de la red.
 
@@ -204,17 +208,47 @@ Pero, nota como hay algo extraño aqui, el vector gradiente nos indicara la dire
 
 **Si $\nabla f$ nos indica la direccion de maximo crecimiento de $f$, $-\nabla f$ nos da la direccion de maximo descenso de $f.$**
 
-Interpolando, $-\nabla L$ nos indica como debemos modificar los valores de los pesos para reducir nuestra funcion de perdida.
+Interpolando, $-\nabla \mathcal{L}$ nos indica como debemos modificar los valores de los pesos para reducir nuestra funcion de perdida.
 
 > * Viendolo algebraicamente, si pudieramos escribir la funcion de perdida como una ecuacion gigante en donde las constantes son los valores de entrada a la red mas los valores de salida esperados, y las incognitas fueran los pesos, estariamos tratando de encontrar todos los valores de esos pesos tales que al reemplazarlos en la ecuacion, sea 0. Y digo tratando, porque ya sabes que en la practica, tratamos de minimizar ese numero tanto como sea posible. 
 > * Hace rato te mencione una de las razones intuitivas por las cuales en algunos modelos es posible que jamas se alcance un valor de 0 absoluto para la funcion de perdida. Bueno, con el gradiente como herramienta, hay otra justificacion para ello. Si recuerdas calculo diferencial, sabras que una funcion puede tener varios **valores minimos locales**, que son puntos en donde la funcion parece decrecer hasta cierto punto, y a partir de ahi, comienza a crecer otra vez, dando la falsa impresion de que ese es el valor minimo absoluto que puede tomar la funcion en todo su dominio. La consecuencia de esto en nuestro sistema es que nuestro vector gradiente nos guiara hasta el minimo local mas cercano que se encuentre, pero no es garantia de que ese sea el **minimo global** o absoluto de la funcion, y una vez llegados a ese punto (o muy cerca de el), como el negativo del gradiente solo apunta a la direccion de maximo decenso, y ya no podemos decender mas, el entramiento morira en ese punto. En altas dimensionalidades este problema es incluso mas activo.
 
-#### La regla de la cadena 
+##### La regla de la cadena 
 
-Las componentes del vector gradiente son derivadas, concretamente, derivadas parciales respecto a cada peso de la red. Como se calculan exactamente?
+Bien, para obtener nuestro vector gradiente, debemos calcular la **derivada parcial** de la funcion de perdida con respecto a **todo** peso en $\theta$.
 
-Trabajo en Progreso...
+Bien. Para una derivada parcial de una funcion de, por ejemplo dos variables,  $f(x, y)$, si $x$ y $y$ son directamente las variables independientes de $f$, es decir que no hay otras funciones de las que dependan $x$ y $y$, podemos calcular sus derivadas parciales $\frac{\partial f}{\partial x}$ y $\frac{\partial f}{\partial y}$ de manera directa. 
 
+Sin embargo, hemos de recordar que en esta arquitectura, los pesos (sobre todo los de las primeras capas) no influyen directamente en $\mathcal{L}$ si no que lo hacen por medio de varias funciones a las cuales si afectan directamente (la preactivacion y la activacion).
+
+Por lo que, analogicamente y retomando nuestro ejemplo $f(x, y)$. Si $x$ no es una independiente si no una funcion de otra variable, por ejemplo, $x = g(a)$, y lo mismo para $y$, y $y = h(b)$. Entonces ahora, si $a$ y $b$ son arbitrarias y nos interesa conocer $\frac{\partial f}{\partial a}$ y $\frac{\partial f}{\partial b}$, la cosa cambia.
+
+Aqui es donde entra la regla de la cadena (*Chain Rule*), que nos indica la forma de obtener esas derivadas:
+
+Sea $f(x, y)$ donde $x = g(a)$ y $y = h(b)$, entonces:
+
+$$ \frac{\partial f}{\partial a} = \frac{\partial f}{\partial x} \cdot \frac{\partial x}{\partial a} $$ 
+
+$$ \frac{\partial f}{\partial a} = \frac{\partial f}{\partial y} \cdot \frac{\partial y}{\partial b} $$ 
+
+> * Esta regla me encanta porque es muy intuitiva!. Nota como, si queremos encontrar la derivada de $f$ con respecto a $a$, vamos de lo mas grande a lo mas pequeño, primero encontramos $f$ con respecto a $x$ y luego $x$ con respecto a $a$. Simple!. 
+> * En la literatura, documentacion, codigo, y demas, podras encontrar los terminos de las derivadas en otro orden, porque la multiplicacion es conmutativa. 
+
+Esta regla se aplica para tantas relaciones entre funciones y variables tengamos.
+
+Bien, con esta herramienta. Podemos adentrarnos en el calculo de las derivadas del vector gradiente. 
+
+Con nuestra activacion definida como:
+
+$$ a_i^{(L+1)} = f(z_i^{(L+1)}) $$
+
+$$ z_i^{(L+1)} = w_{i1}^{(L+1)}a_1^{(L)} + w_{i2}^{(L+1)}a_2^{(L)} + \cdots + w_{ij}^{(L+1)} a_{j}^{(L)} $$
+
+> Antes de seguir leyendo, observa y analiza la dependencia: $\mathcal{L}$ depende de $a_i^{(L+1)}$, $a_i^{(L+1)}$ depende de $z_i^{(L+1)}$, $z_i^{(L+1)}$ depende de $w_{i1}^{(L+1)}a_1^{(L)} + w_{i2}^{(L+1)}a_2^{(L)} + \cdots + w_{ij}^{(L+1)} a_{j}^{(L)}$. En tu mente, visualiza a cada producto $w_{ij}^{(L+1)}a_j^{(L)}$ como una sola variable. Lo que vamos a encontrar es la derivada de $\mathcal{L}$ con respecto a una de esas variables.
+
+La derivada parcial de la funcion de perdida $\mathcal{L}$ con respecto a cierto peso $w_{ij}$ de la capa $L$ es:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \frac{\partial \mathcal{L} }{\partial a_j^{L+1}} \cdot \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} } \cdot \frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1} }  $$
 
 
 
