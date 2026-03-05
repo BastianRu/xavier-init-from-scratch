@@ -275,7 +275,7 @@ Sin embargo, en el proceso de *backprop* de todos los ejemplos de entrenamiento,
 Si has llegado hasta aqui y tienes todos los conceptos al dia. Ya estamos listos para adentrarnos en el problema sin preocuparnos discordancias de notacion. Vamos a ello!
 
 ---
-### Saturacion de las activaciones
+### Activaciones y Neuronas muertas
 
 Bien, ya sabemos como fluyen los datos a traves de la red, de ida y vuelta. En la jerga del campo estos flujos son mas conocidos como **inferencia** (hacia adelante) y **entrenamiento** (hacia atras), los cuales estan intimamente relacionados porque uno depende del otro en una relacion secuencial. La inferencia de un paso afecta el entrenamiento del siguiente, y el entrenamiento del siguiente afecta la inferencia del proximo, y asi sucesivamente. 
 
@@ -285,7 +285,45 @@ Y es que, no es perfecto. O mas bien, existen algunos efectos secundarios de su 
 
 > A partir de aqui nos sumergiremos en mucho terreno probabilistico, y podrias pensar que estos problemas son derivados de la entropia. Pero como veremos, no es asi, no ocurren por azar, sino por la naturaleza misma de las funciones que elegimos. Como dice el Merovingio de la saga Matrix: **"Donde otros ven casualidad, yo veo causalidad"**.
 
+Con nuestra derivada de la perdida con respecto a un peso en especifico:
 
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \frac{\partial \mathcal{L} }{\partial a_j^{L+1}} \cdot \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} } \cdot \frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}}  $$
+
+La derivada $\frac{\partial \mathcal{L} }{\partial a_j^{L+1}}$ se calcula dependiendo de la funcion de perdida que se asigne a la red, aun asi, debido a que todas las funciones de perdida son funcion de las activaciones finales, podemos analizar su comportamiento, pero lo dejaremos para secciones posteriores, por ahora nos centraremos en los ultimos dos terminos de esta expresion. En $\frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}}$  como el peso es la variable independiente, y la activacion anterior una constante, entonces:
+
+$$ \frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}} = a_j^{L} $$
+
+Y en $ \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} } $, si $f = \tanh$, la derivada de la activacion con respecto a la preactivacion es (por regla de la cadena) simplemente la derivada de la tangente evaluada en esa misma preactivacion. Es decir:
+
+$$ \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} } = f'(z_j^{L+1}) = \tanh'(z_j^{L+1}) $$
+
+Fijate como para ambos casos, $\frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}}$ y $ \frac{\partial a_j^{L+1} }{\partial z_j^{L+1} }$ terminan dependiendo directamente de las activaciones anteriores y la preactivacion de la capa actual. Tambien, observa como $a_j^{L}$ es realidad en $\tanh(z_j^{L-1})$ (la preactivacion con dos capas de distancia a L+1), lo que quiere decir que a fin de cuentas, la funcion de activacion determina absolutamente todo el comportamiento del flujo de la informacion a traves de la red, tanto en la propagacion hacia adelante como en la propagacion hacia atras.
+
+> Por esta razon es muy importante elegir adecuadamente la funcion de activacion para cada modelo. Y como veremos mas adelante, existen soluciones propuestas que solventan el problema solo para algunas activaciones, no para todas.
+
+Como hemos mostrado, toda la atencion se centra en la funcion de activacion, para nuestro caso, la tangente hiperbolica, y su derivada. Asi que vamos a investigar su curioso comportamiento.
+
+> Puedes intentar aplicar el mismo analisis a las otras funciones de activacion, te daras cuenta como la gran mayoria sufren de problemas similares a los que mostraremos.
+
+La grafica de $\tanh$ luce algo asi:
+
+<br>
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Hyperbolic_Tangent.svg" width="480" height="200" alt="Perceptron-Multi-capa">
+</p>
+
+Esta funcion "comprime" los valores de entrada a valores entre -1 y 1. Teoricamente 1 y -1 solo se alcanzan cuando $x \to \infty^\pm$, pero computacionalmente, basta con que las entradas se alejen un poco del origen para que el redondeo acerque los valores a 1 y -1. 
+
+Por ejemplo, teoricamente:
+
+$ \tanh(2) \approx 0.96402758007 $
+
+**PyTorch**, la libreria por excelencia para desarrollo de *Machine Learning*, tiene la funcion implementada, lista para usarse:
+
+ ```torch.tensor(2).tanh()```
+> **Salida: tensor(0.9640)**
+
+Notese como solo se usan **4 cifras significativas**. Esto tiene mucho impacto.
 
 
 
