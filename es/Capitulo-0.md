@@ -367,15 +367,19 @@ Por lo que, las preactivaciones con valores de aproximadamente 10 o mas (o -10),
 Recordemos los terminos:
 
 * $$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}} = \tanh(z_j^{L}) $$
+
 >Recuerda que: $ a_j^L = \tanh(z_j^L)$
+
 * $$ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }  = \tanh'(z_i^{L+1})  $$ 
 
 De lo analizado podemos sacar dos conclusiones:
 
 1. Si las preactivaciones $ z_j^{L} $ adquieren valores grandes, los terminos$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ seran aproximadamente 1 o -1. Esto quiere decir que si las preactivaciones son muy grandes, en el proceso de propagacion hacia atras, a lo mucho, lo unico que aportaran sera un cambio de signo al gradiente de los pesos!. Y el aprendizaje que aporta un cambio binario es bastante precario en muchos casos.
 
+> Cuidado, no siempre aporta solo un cambio de signo, esto solo es si las preactivaciones son los suficientemente grandes, si no lo son. Aporta un factor entre 1 y -1 que multiplica al resto del gradiente. 
+
 2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
-. Si $ x \to \infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ son lo suficientemente grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ seran aproximadamente 0!
+. Si $ x \to \infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ tienden a ser grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ tenderan a 0!. 
 
 
 
