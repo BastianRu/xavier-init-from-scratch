@@ -316,16 +316,55 @@ Esta funcion "comprime" los valores de entrada a valores entre -1 y 1. Teoricame
 
 Por ejemplo, teoricamente:
 
-$ \tanh(2) \approx 0.96402758007 $
+$$ \tanh(2) \approx 0.96402758007 $$
 
-**PyTorch**, la libreria por excelencia para desarrollo de *Machine Learning*, tiene la funcion implementada, lista para usarse:
+**PyTorch**, la libreria por excelencia para el desarrollo de *Machine Learning*, tiene la funcion implementada, lista para usarse:
 
- ```torch.tensor(2).tanh()```
-> **Salida: tensor(0.9640)**
+```python
+torch.tensor(2).tanh()
+# Salida: tensor(0.9640)
+```
+> en PyTorch, los **tensores** son la estructura fundamental, todos los valores son representados mediante tensores. Un tensor puede representar escalares, vectores y matrices de cualquier dimension.
 
-Notese como solo se usan **4 cifras significativas**. Esto tiene mucho impacto.
+Notese como solo se usan **4 cifras significativas**. Esto tiene mucho impacto. Veamos tambien otros ejemplos:
 
+* $$ \tanh(5) \approx 0.99990920426 $$
 
+```python
+torch.tensor(5).tanh()
+# Salida: tensor(0.9999)
+```
+> Como la quinta cifra significativa es 0, el redondeo deja el numero en 0.9999.
+
+* $$\tanh(6) \approx 0.99998771165 $$
+
+```python
+torch.tensor(6).tanh()
+# Salida: tensor(1.0000)
+```
+
+> Sin embargo aqui, la quinta cifra es 8, por lo que el redondeo aproxima el numero.
+
+En realidad, estos ejemplo son solo conceptuales, para que comprendas que existe un limite en la capacidad de las maquinas para representar numeros irracionales (como los que produce $\tanh$). La precision de **visualizacion** por defecto de PyTorch es de 4 decimales, pero puede ser ajustada a discrecion. El limite real se encuentra en el tipo de dato que los tensores manejan, que es `float32` (32 bits), lo que significa que solo tendriamos aproximadamente 7 digitos de presicion para los valores de las activaciones:
+
+* ```python
+  torch.set_printoptions(precision=10)
+  torch.tensor(9).tanh()
+  # Salida: tensor(0.9999999404)   
+  ```
+Y
+
+* ```python
+  torch.set_printoptions(precision=10)
+  torch.tensor(10).tanh()
+  # Salida: tensor(1.)
+  ```
+
+Como se muestra, ajustar la precisión visual nos permite ver los dígitos que PyTorch normalmente oculta, ayudandonos a diferenciar valores que del 1 o -1 absolutos. Sin embargo, esto **es puramente visual**: para una entrada de 10, la diferencia con el 1 es tan pequeña que el float32 se queda sin capacidad para representarla. 
+
+Por lo que, las preactivaciones con valores de aproximadamente 10 o mas (o -10), se convierten en activaciones puramente de 1 (o -1).
+
+> Recuerda bien este dato!.
 
 
 
