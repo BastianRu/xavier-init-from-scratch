@@ -312,7 +312,7 @@ La grafica de $\tanh$ luce algo asi:
   <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Hyperbolic_Tangent.svg" width="480" height="200" alt="Perceptron-Multi-capa">
 </p>
 
-Esta funcion "comprime" los valores de entrada a valores entre -1 y 1. Teoricamente 1 y -1 solo se alcanzan cuando $x \to \infty^\pm$, pero computacionalmente, basta con que las entradas se alejen un poco del origen para que el redondeo acerque los valores a 1 y -1. 
+Esta funcion "comprime" los valores de entrada a valores entre -1 y 1. Teoricamente 1 y -1 solo se alcanzan cuando $x \to \pm\infty$, pero computacionalmente, basta con que las entradas se alejen un poco del origen para que el redondeo acerque los valores a 1 y -1. 
 
 Por ejemplo, teoricamente:
 
@@ -379,12 +379,22 @@ De lo analizado podemos sacar dos conclusiones:
 > Cuidado, no siempre aporta solo un cambio de signo, esto solo es si las preactivaciones son los suficientemente grandes, si no lo son. Aporta un factor entre 1 y -1 que multiplica al resto del gradiente. 
 
 2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
-. Si $ x \to \infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ tienden a ser grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ tenderan a 0!. 
+. Si $ x \to \pm\infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ tienden a ser grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ tenderan a 0!. 
+
+Formalicemos estas dos reglas para los casos extremos:
+
+   * Si $ z_j^{L} \to \pm\infty$, entonces, $ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}} \to \pm1 $.
+
+   * Si $z_i^{L+1} \to \pm\infty$, entonces $\frac{\partial a_i^{L+1} }     {\partial z_i^{L+1} } \to 0$.
 
 
+Excelente, hemos analizado el comportamiento dos de los tres terminos de el gradiente para un peso de la red. Pero aun nos falta el mas importante. 
 
+#### La propagacion del gradiente
 
+Como vimos en las secciones anteriores, el gradiente de un peso depende de un tercer termino:
 
+TRABAJO EN PROGRESO
 
 
 
