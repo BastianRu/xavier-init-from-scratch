@@ -374,11 +374,11 @@ Recordemos los terminos:
 
 De lo analizado podemos sacar dos conclusiones:
 
-1. Si las preactivaciones $ z_j^{L} $ adquieren valores grandes, los terminos$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ seran aproximadamente 1 o -1. Esto quiere decir que si las preactivaciones son muy grandes, en el proceso de propagacion hacia atras, a lo mucho, lo unico que aportaran sera un cambio de signo al gradiente de los pesos!. Y el aprendizaje que aporta un cambio binario es bastante precario en muchos casos.
+ 1. Si las preactivaciones $ z_j^{L} $ adquieren valores grandes, los terminos$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ seran aproximadamente 1 o -1. Esto quiere decir que si las preactivaciones son muy grandes, en el proceso de propagacion hacia atras, a lo mucho, lo unico que aportaran sera un cambio de signo al gradiente de los pesos!. Y el aprendizaje que aporta un cambio binario es bastante precario en muchos casos.
 
 > Cuidado, no siempre aporta solo un cambio de signo, esto solo es si las preactivaciones son los suficientemente grandes, si no lo son. Aporta un factor entre 1 y -1 que multiplica al resto del gradiente. 
 
-2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
+ 2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
 . Si $ x \to \pm\infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ tienden a ser grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ tenderan a 0!. 
 
 Formalicemos estas dos reglas para los casos extremos:
@@ -392,11 +392,39 @@ Excelente, hemos analizado el comportamiento dos de los tres terminos de el grad
 
 #### La propagacion del gradiente
 
-Como vimos en las secciones anteriores, el gradiente de un peso depende de un tercer termino:
+Como vimos en las secciones anteriores, el gradiente de un peso depende tambien de un tercer termino. La derivada de la perdida con respecto a la activacion de la capa presente:
 
-TRABAJO EN PROGRESO
+$$ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $$
 
+Este termino es especial porque aqui reside el llamado concepto de la propagacion del gradiente (*gradient propagation*). Y es que, la naturaleza de la regla de la cadena hace que el calculo de gradientes sea recursivo, sin esta caracteristica, no conseguiriamos ahorrarnos mucha computacion que imposibilitaria la optimizacion del entrenamiento.
 
+---
+**El termino** $\delta$
+
+Antes de pasar al calculo de dicha expresion, considero prudente introducir otra notacion con la que vamos a trabajar y que muy probablemente encontraras en el material relacionado.
+
+Como ya vimos $ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $ nos dice que la perdida es funcion (en este caso directa) de la activacion $a_i^{L+1}$. Y $a_i^{L+1}$ es funcion de $z_i^{L+1}$. Esto significa que podemos encontrar la derivada de la perdida con respecto a $z_i^{L+1}$, asi que apliquemos la regla de la cadena otra vez:
+
+$$ \frac{\partial \mathcal{L}}{\partial z_i^{L+1} } = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} } $$
+
+Este termino es particular porque aparecere de manera recursiva (como veremos en breves). Por ello, en la literatura, se le otorgo la siguiente notacion especial:
+
+$$\delta_i^{L+1} = \frac{\partial \mathcal{L}}{\partial z_i^{L+1} }  $$
+
+Ahora, nota como $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ y $\frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$ aparecen en $\frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}}$. Por lo que podemos sustituir expresiones:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1} } $$
+
+Ya vimos que $\frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1} } = a_j^L $, entonces:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot a_j^L $$
+
+> He aqui otra definicion del gradiente de un peso con la que podrias toparte en tu aprendizaje.
+
+---
+<br>
+
+En $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$, la activacion $a_i^{L+1}$ 
 
 
 
