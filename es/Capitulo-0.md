@@ -405,11 +405,24 @@ Si $L+1$ es la ultima capa de la red, la derivada de la perdida con respecto a u
 
 > El simbolo $\not \equiv$ significa No Identidad. Si usaramos $\not=$ estariamos diciendo que los valores de ambas derivadas no son iguales, lo cual pues pensar que es cierto, porque se calculan distinto, pero puede darse el caso en el que igual terminen coincidiendo en valores, entonces se contradice la afirmacion. Con $\not\equiv$ indicamos que la **naturaleza de ambas expresiones es distinta**, incluso si llegan a adquirir valores similares.
 
-Dado que en la ultima capa de la red la funcion de perdida es funcion de las activaciones finales de la red, la derivada solamente depende de esas ultimas activaciones y por lo tanto se obtiene de forma directa aplicando reglas de derivacion. No obstante, si se requiere conocer la misma derivada para una de las activaciones en las capas intermedias, el calculo cambia.
+Dado que en la ultima capa de la red la funcion de perdida es funcion de las activaciones finales de la red, la derivada solamente depende de esas ultimas activaciones y por lo tanto se obtiene de forma directa aplicando reglas de derivacion. No obstante, si se requiere conocer la misma derivada para una de las activaciones en las capas intermedias, tal como nos concierne en este articulo, el calculo cambia.
 
-En otras palabras, la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula de manera diferente segun si $L+1$ es la ultima capa de la red, o no. En este articulo, supondremos que $L+1$ **no** representa la ultima capa, a menos que se diga explicitamente lo contrario. 
+En otras palabras, la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula de manera diferente segun si $L+1$ es la ultima capa de la red, o no. 
 
-Bien, con este supuesto en mente, $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ es especial porque aqui reside el llamado concepto de la propagacion del gradiente (*gradient propagation*). Y es que, la naturaleza de la regla de la cadena hace que el calculo de gradientes sea recursivo. Esta propiedad permite reutilizar calculos intermedios al propagar el gradiente hacia atras en la red, lo que reduce enormemente el costo computacional del entrenamiento.
+Como hicimos durante el Forward Pass, seguiremos razonando sobre la pareja de capas $(L,L+1)$. Para mantener esta convencion, analizaremos la derivada de la perdida con respecto a las activaciones de la capa $L$:
+
+$$ \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
+
+Aquí asumiremos que $L$ representa una capa intermedia de la red. En consecuencia, la capa $L+1$ puede ser otra capa intermedia o incluso la capa de salida.
+
+> Podriamos haber decidido estudiar la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$. Sin embargo, esto nos obligaría a imponer que $L+1$ no sea la capa de salida, ya que en ese caso la expresion seria inmediata. <br><br>
+En cambio al trabajar con $\frac{\partial \mathcal{L} }{\partial a_j^{L}} $ podemos mantener intacta nuestra convencion. Ademas, esto refleja mejor el comportamiento de la propagacion hacia atras, donde el flujo es de atras para adelante:
+> > Forward Pass:         $L  \to  L+1$ <br>
+> > Backward Pass:       $L  \gets  L+1$
+
+
+
+Bien, con este supuesto en mente, $\frac{\partial \mathcal{L} }{\partial a_j^{L}}$ es especial porque aqui reside el llamado concepto de la propagacion del gradiente (*gradient propagation*). Y es que, la naturaleza de la regla de la cadena hace que el calculo de gradientes sea recursivo. Esta propiedad permite reutilizar calculos intermedios al propagar el gradiente hacia atras en la red, lo que reduce enormemente el costo computacional del entrenamiento.
 
 ---
 **El termino** $\delta$
@@ -439,6 +452,34 @@ $$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot a_
 Resaltemos un hecho importante dentro de la propagacion hacia adelante:
 
 Por como esta definida la preactivacion, una sola activacion $a_j$ en la capa $L$ **influira en todas** las activaciones $a_i$ que existan en la capa $L+1$. Lo que significa que cualquier cambio en una $a_j^L$ afectara todas y cada una de las activaciones $a_i^{L+1}$ 
+
+Como $a_i^{L+1}$ = $f(z_i^{L+1})$ [$f=\tanh]$, entonces una sola $a_j^L$ influye en todas las preactivaciones de la siguiente capa:
+
+$$ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $$
+
+Dicho de otro modo, todas las preactivaciones $z_i$ de la capa $L+1$ son funcion (entre otras variables) de la activacion $a_j$ de la capa $L$, escrito formalmente:
+
+$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $ <br>
+$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$ <br>
+$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$ <br>
+$ \vdots $ <br>
+$ z_n^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $ 
+
+Donde $m$ es el numero de neuronas de la capa $L$.
+
+> Si ya eres fluido con el Forward Pass, tal vez las anteriores expresiones te parezcan obvias, pero para poder entender el siguiente paso, es preciso destacar especificamente que $a_j^L$ esta presente en toda $z_i^{L+1}$.
+
+Por ultimo, la funcion de perdida, es funcion de todas las preactivaciones $ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $:
+
+$$ \mathcal{L}(z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1}) $$
+
+> Sin importar si $L+1$ es la ultima capa o no, lo anterior se cumple. Pero recuerda que asumimos que $L+1$ no representa la ultima capa.
+ 
+**La regla de la cadena total**
+
+Anteriormente ya habiamos visto como la regla de la cadena nos permitia calcular derivadas de funciones que tenian variables intermedias que dependendian a su vez de otras variables. Usualmente solo se le llama regla de la cadena, a secas, pero su nombre completo es **regla de la cadena multivariable**, y es asi porque se usa solo en funciones mutivariable. 
+
+Sin embargo, en este caso, las cosas son algo diferentes. Se supone que tratamos de encontrar el termino $\frac{\partial \mathcal{L} }{\partial a_j^{L}}$, es decir que tanto cambia $\mathcal{L}$ cuando $a_j^L$ cambia. Pero, ¿Como lo calculamos, si un solo cambio en $a_j^{L}$ provoca un cambio en todos los $z_i^{L+1}$ los cuales a su vez provocan **todos** un cambio en $\mathcal{L}$?
 
 
 
