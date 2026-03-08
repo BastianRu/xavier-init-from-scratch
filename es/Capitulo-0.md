@@ -289,7 +289,8 @@ Con nuestra derivada de la perdida con respecto a un peso en especifico:
 
 $$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} } \cdot \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1} }  $$
 
-La derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula dependiendo de la funcion de perdida que se asigne a la red, aun asi, debido a que todas las funciones de perdida son funcion de las activaciones finales, podemos analizar su comportamiento, pero lo dejaremos para secciones posteriores, por ahora nos centraremos en los ultimos dos terminos de esta expresion. En $\frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}}$  como el peso es la variable independiente, y la activacion anterior una constante, entonces:
+La derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula dependiendo de dos cosas, primera, de si $L+1$ es o no la ultima capa, y segunda, de la funcion de perdida especifica, aun asi, debido a que todas las funciones de perdida son funcion de las activaciones finales, podemos analizar su comportamiento, pero lo dejaremos para secciones posteriores, por ahora nos centraremos en los ultimos dos terminos de esta expresion. En $\frac{\partial z_j^{L+1} }{\partial w_{ij}^{L+1}}$  como el peso es la variable independiente, y la activacion anterior una constante, entonces:
+
 
 $$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}} = a_j^{L} $$
 
@@ -396,14 +397,26 @@ Como vimos en las secciones anteriores, el gradiente de un peso depende tambien 
 
 $$ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $$
 
-Este termino es especial porque aqui reside el llamado concepto de la propagacion del gradiente (*gradient propagation*). Y es que, la naturaleza de la regla de la cadena hace que el calculo de gradientes sea recursivo, sin esta caracteristica, no conseguiriamos ahorrarnos mucha computacion que imposibilitaria la optimizacion del entrenamiento.
+Como te mencione previamente, este termino se calcula en base a la funcion de costo elegida. Como en este analisis hemos representado $\mathcal{L}$ de forma general, no sera necesario conocer la derivada. Sin embargo, hay un hecho importante que conocer sobre este termino:
+
+$$ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \not\equiv  \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
+
+Si $L+1$ es la ultima capa de la red, la derivada de la perdida con respecto a una activacion en la misma capa, es **estructuralmente diferente** de la derivada de la perdida con respecto a una activacion en la capa anterior. 
+
+> El simbolo $\not \equiv$ significa No Identidad. Si usaramos $\not=$ estariamos diciendo que los valores de ambas derivadas no son iguales, lo cual pues pensar que es cierto, porque se calculan distinto, pero puede darse el caso en el que igual terminen coincidiendo en valores, entonces se contradice la afirmacion. Con $\not\equiv$ indicamos que la **naturaleza de ambas expresiones es distinta**, incluso si llegan a adquirir valores similares.
+
+Dado que en la ultima capa de la red la funcion de perdida es funcion de las activaciones finales de la red, la derivada solamente depende de esas ultimas activaciones y por lo tanto se obtiene de forma directa aplicando reglas de derivacion. No obstante, si se requiere conocer la misma derivada para una de las activaciones en las capas intermedias, el calculo cambia.
+
+En otras palabras, la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula de manera diferente segun si $L+1$ es la ultima capa de la red, o no. En este articulo, supondremos que $L+1$ **no** representa la ultima capa, a menos que se diga explicitamente lo contrario. 
+
+Bien, con este supuesto en mente, $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ es especial porque aqui reside el llamado concepto de la propagacion del gradiente (*gradient propagation*). Y es que, la naturaleza de la regla de la cadena hace que el calculo de gradientes sea recursivo. Esta propiedad permite reutilizar calculos intermedios al propagar el gradiente hacia atras en la red, lo que reduce enormemente el costo computacional del entrenamiento.
 
 ---
 **El termino** $\delta$
 
 Antes de pasar al calculo de dicha expresion, considero prudente introducir otra notacion con la que vamos a trabajar y que muy probablemente encontraras en el material relacionado.
 
-Como ya vimos $ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $ nos dice que la perdida es funcion (en este caso directa) de la activacion $a_i^{L+1}$. Y $a_i^{L+1}$ es funcion de $z_i^{L+1}$. Esto significa que podemos encontrar la derivada de la perdida con respecto a $z_i^{L+1}$, asi que apliquemos la regla de la cadena otra vez:
+Como ya vimos $ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $ nos dice que la perdida es funcion de la activacion $a_i^{L+1}$. Y $a_i^{L+1}$ es funcion de $z_i^{L+1}$. Esto significa que podemos encontrar la derivada de la perdida con respecto a $z_i^{L+1}$, asi que apliquemos la regla de la cadena otra vez:
 
 $$ \frac{\partial \mathcal{L}}{\partial z_i^{L+1} } = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} } $$
 
