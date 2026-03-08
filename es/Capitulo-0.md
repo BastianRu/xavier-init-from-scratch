@@ -409,7 +409,7 @@ Dado que en la ultima capa de la red la funcion de perdida es funcion de las act
 
 En otras palabras, la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ se calcula de manera diferente segun si $L+1$ es la ultima capa de la red, o no. 
 
-Como hicimos durante el Forward Pass, seguiremos razonando sobre la pareja de capas $(L,L+1)$. Para mantener esta convencion, analizaremos la derivada de la perdida con respecto a las activaciones de la capa $L$:
+Como hicimos durante el *Forward Pass*, seguiremos razonando sobre la pareja de capas $(L,L+1)$. Para mantener esta convencion, analizaremos la derivada de la perdida con respecto a las activaciones de la capa $L$:
 
 $$ \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
 
@@ -459,11 +459,11 @@ $$ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $$
 
 Dicho de otro modo, todas las preactivaciones $z_i$ de la capa $L+1$ son funcion (entre otras variables) de la activacion $a_j$ de la capa $L$, escrito formalmente:
 
-$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $ <br>
-$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$ <br>
-$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$ <br>
-$ \vdots $ <br>
-$ z_n^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $ 
+$$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$ 
+$$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ 
+$$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ 
+$$ \vdots $$ 
+$$ z_n^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$
 
 Donde $m$ es el numero de neuronas de la capa $L$.
 
