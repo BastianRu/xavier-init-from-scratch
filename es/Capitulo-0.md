@@ -213,11 +213,11 @@ Interpolando, $-\nabla \mathcal{L}$ nos indica como debemos modificar los valore
 > * Viendolo algebraicamente, si pudieramos escribir la funcion de perdida como una ecuacion gigante en donde las constantes son los valores de entrada a la red mas los valores de salida esperados, y las incognitas fueran los pesos, estariamos tratando de encontrar todos los valores de esos pesos tales que al reemplazarlos en la ecuacion, sea 0. Y digo tratando, porque ya sabes que en la practica, tratamos de minimizar ese numero tanto como sea posible. 
 > * Hace rato te mencione una de las razones intuitivas por las cuales en algunos modelos es posible que jamas se alcance un valor de 0 absoluto para la funcion de perdida. Bueno, con el gradiente como herramienta, hay otra justificacion para ello. Si recuerdas calculo diferencial, sabras que una funcion puede tener varios **valores minimos locales**, que son puntos en donde la funcion parece decrecer hasta cierto punto, y a partir de ahi, comienza a crecer otra vez, dando la falsa impresion de que ese es el valor minimo absoluto que puede tomar la funcion en todo su dominio. La consecuencia de esto en nuestro sistema es que nuestro vector gradiente nos guiara hasta el minimo local mas cercano que se encuentre, pero no es garantia de que ese sea el **minimo global** o absoluto de la funcion, y una vez llegados a ese punto (o muy cerca de el), como el negativo del gradiente solo apunta a la direccion de maximo decenso, y ya no podemos decender mas, el entramiento morira en ese punto. En altas dimensionalidades este problema es incluso mas activo.
 
-##### La regla de la cadena 
+#### La regla de la cadena 
 
 Bien, para obtener nuestro vector gradiente, debemos calcular la **derivada parcial** de la funcion de perdida con respecto a **todo** peso en $\theta$.
 
-Bien. Para una derivada parcial de una funcion de, por ejemplo dos variables,  $f(x, y)$, si $x$ y $y$ son directamente las variables independientes de $f$, es decir que no hay otras funciones de las que dependan $x$ y $y$, podemos calcular sus derivadas parciales $\frac{\partial f}{\partial x}$ y $\frac{\partial f}{\partial y}$ de manera directa. 
+Para una derivada parcial de una funcion de, por ejemplo dos variables,  $f(x, y)$, si $x$ y $y$ son directamente las variables independientes de $f$, es decir que no hay otras funciones de las que dependan $x$ y $y$, podemos calcular sus derivadas parciales $\frac{\partial f}{\partial x}$ y $\frac{\partial f}{\partial y}$ de manera directa. 
 
 Sin embargo, hemos de recordar que en esta arquitectura, los pesos (sobre todo los de las primeras capas) no influyen directamente en $\mathcal{L}$ si no que lo hacen por medio de varias funciones a las cuales si afectan directamente (la preactivacion y la activacion).
 
@@ -374,11 +374,11 @@ Recordemos los terminos:
 
 De lo analizado podemos sacar dos conclusiones:
 
- 1. Si las preactivaciones $ z_j^{L} $ adquieren valores grandes, los terminos$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ seran aproximadamente 1 o -1. Esto quiere decir que si las preactivaciones son muy grandes, en el proceso de propagacion hacia atras, a lo mucho, lo unico que aportaran sera un cambio de signo al gradiente de los pesos!. Y el aprendizaje que aporta un cambio binario es bastante precario en muchos casos.
+1. Si las preactivaciones $ z_j^{L} $ adquieren valores grandes, los terminos$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ seran aproximadamente 1 o -1. Esto quiere decir que si las preactivaciones son muy grandes, en el proceso de propagacion hacia atras, a lo mucho, lo unico que aportaran sera un cambio de signo al gradiente de los pesos!. Y el aprendizaje que aporta un cambio binario es bastante precario en muchos casos.
 
 > Cuidado, no siempre aporta solo un cambio de signo, esto solo es si las preactivaciones son los suficientemente grandes, si no lo son. Aporta un factor entre 1 y -1 que multiplica al resto del gradiente. 
 
- 2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
+2. **La importante**: $$\tanh'(x) = 1 - \tanh^2(x)$$
 . Si $ x \to \pm\infty $, entonces $\tanh'(x) \to 0$. Pero como ya vimos, computacionalmente, si las preativaciones $z_i^{L+1}$ tienden a ser grandes, los terminos $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ tenderan a 0!. 
 
 Formalicemos estas dos reglas para los casos extremos:
@@ -422,10 +422,10 @@ $$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot a_
 > He aqui otra definicion del gradiente de un peso con la que podrias toparte en tu aprendizaje.
 
 ---
-<br>
 
-En $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$, la activacion $a_i^{L+1}$ 
+Resaltemos un hecho importante dentro de la propagacion hacia adelante:
 
+Por como esta definida la preactivacion, una sola activacion $a_j$ en la capa $L$ **influira en todas** las activaciones $a_i$ que existan en la capa $L+1$. Lo que significa que cualquier cambio en una $a_j^L$ afectara todas y cada una de las activaciones $a_i^{L+1}$ 
 
 
 
