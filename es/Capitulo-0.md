@@ -459,10 +459,10 @@ $$ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $$
 
 Dicho de otro modo, todas las preactivaciones $z_i$ de la capa $L+1$ son funcion (entre otras variables) de la activacion $a_j$ de la capa $L$, escrito formalmente:
 
-$$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$ 
-$$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ 
-$$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ 
-$$ \vdots $$ 
+$$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$ <br>
+$$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$  <br>
+$$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ <br> 
+$$ \vdots $$  <br>
 $$ z_n^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$
 
 Donde $m$ es el numero de neuronas de la capa $L$.
