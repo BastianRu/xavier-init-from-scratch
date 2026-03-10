@@ -415,7 +415,7 @@ $$ \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
 
 Aquí asumiremos que $L$ representa una capa intermedia de la red. En consecuencia, la capa $L+1$ puede ser otra capa intermedia o incluso la capa de salida.
 
-> Podriamos haber decidido estudiar la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$. Sin embargo, esto nos obligaría a imponer que $L+1$ no sea la capa de salida, ya que en ese caso la expresion seria inmediata. <br><br>
+> Podriamos haber decidido estudiar la derivada $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$. Sin embargo, esto nos obligaria a imponer que $L+1$ no sea la capa de salida, ya que en ese caso la expresion seria inmediata. <br><br>
 En cambio al trabajar con $\frac{\partial \mathcal{L} }{\partial a_j^{L}} $ podemos mantener intacta nuestra convencion. Ademas, esto refleja mejor el comportamiento de la propagacion hacia atras, donde el flujo es de atras para adelante:
 > > Forward Pass:         $L  \to  L+1$ <br>
 > > Backward Pass:       $L  \gets  L+1$
@@ -473,7 +473,7 @@ Por ultimo, la funcion de perdida, es funcion de todas las preactivaciones $ z_1
 
 $$ \mathcal{L}(z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1}) $$
 
-> Sin importar si $L+1$ es la ultima capa o no, lo anterior se cumple. Pero recuerda que asumimos que $L+1$ no representa la ultima capa.
+> La funcion de perdida es funcion de las activaciones finales pero estas tambien dependen de activaciones y preactivaciones previas, sin importar si $L+1$ es la ultima capa o no.
  
 **La regla de la cadena total**
 
@@ -481,7 +481,19 @@ Anteriormente ya habiamos visto como la regla de la cadena nos permitia calcular
 
 Sin embargo, en este caso, las cosas son algo diferentes. Se supone que tratamos de encontrar el termino $\frac{\partial \mathcal{L} }{\partial a_j^{L}}$, es decir que tanto cambia $\mathcal{L}$ cuando $a_j^L$ cambia. Pero, ¿Como lo calculamos, si un solo cambio en $a_j^{L}$ provoca un cambio en todos los $z_i^{L+1}$ los cuales a su vez provocan **todos** un cambio en $\mathcal{L}$?
 
+Como siempre, el calculo nos saca de apuros. A diferencia de la regla de la cadena multivariable, la **regla de la cadena total** nos ayuda a diferenciar casos como este, en donde una funcion de interes, en este caso $\mathcal{L}$ se ve afectada por una variable (para el caso $a_j^{L}$) a traves de varios caminos, o varias funciones intermedias. 
 
+Sea $g=f(a, b)$, $a=f_1(x)$ y $b=f_2(x)$, la derivada de $g$ con respecto a $x$ se obtiene de la siguiente manera:
+
+$$ \frac{ \partial g }{ \partial x } = \frac{ \partial g }{ \partial a } \cdot \frac{ \partial a }{ \partial x } + \frac{ \partial g }{ \partial b } \cdot \frac{ \partial b }{ \partial x }   $$
+
+> * Esta regla de la cadena tambien es muy intuitiva!. Vamos de lo mas grande a  lo mas pequeño. 
+
+A cada sumando en la expresion se le conoce como **contribucion** (similar a las contribuciones en la integral), nombre que tiene mucho sentido, dado que cada uno aporta su propia informacion de como $x$ produce cambios en $g$.   
+
+Trasladando esta logica a donde nos interesa:
+
+ 
 
 
 
