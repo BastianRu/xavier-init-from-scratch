@@ -435,7 +435,7 @@ $$ \frac{\partial \mathcal{L}}{\partial z_i^{L+1} } = \frac{\partial \mathcal{L}
 
 Este termino es particular porque aparecere de manera recursiva (como veremos en breves). Por ello, en la literatura, se le otorgo la siguiente notacion especial:
 
-$$\delta_i^{L+1} = \frac{\partial \mathcal{L}}{\partial z_i^{L+1} }  $$
+$$\delta_i^{L+1} \equiv \frac{\partial \mathcal{L}}{\partial z_i^{L+1} }  $$
 
 Ahora, nota como $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ y $\frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$ aparecen en $\frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}}$. Por lo que podemos sustituir expresiones:
 
@@ -491,9 +491,27 @@ $$ \frac{ \partial g }{ \partial x } = \frac{ \partial g }{ \partial a } \cdot \
 
 A cada sumando en la expresion se le conoce como **contribucion** (similar a las contribuciones en la integral), nombre que tiene mucho sentido, dado que cada uno aporta su propia informacion de como $x$ produce cambios en $g$.   
 
-Trasladando esta logica a donde nos interesa:
+Trasladando esta logica a donde nos interesa, teniendo en cuenta las dependencias mencionadas anteriormente:
 
- 
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \frac{ \partial \mathcal{L} }{\partial z_1^{L+1}} \cdot \frac{ \partial z_1^{L+1} }{\partial a_j^L} + \frac{ \partial \mathcal{L} }{\partial z_2^{L+1}} \cdot \frac{ \partial z_2^{L+1} }{\partial a_j^L} + \cdots + \frac{ \partial \mathcal{L} }{\partial z_n^{L+1}} \cdot \frac{ \partial z_n^{L+1} }{\partial a_j^L}  $$ 
+
+Como la estructura de la derivada recorre todas las preactivaciones de la capa $L+1$, entonces la expresion es simplificable mediante sumatoria:
+
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \sum_{i=1}^{n_{L+1}} \frac{ \partial \mathcal{L} }{\partial z_i^{L+1}} \cdot \frac{ \partial z_i^{L+1} }{\partial a_j^L}  $$
+
+Notese como, usando reglas de derivacion parcial, $ \frac{ \partial z_i^{L+1} }{\partial a_j^L} = w_{ij}^{L+1}$ (similar a lo que sucede con $\frac{\partial z_i^{L+1}}{\partial w_{ij}^{L+1}}). $ Tambien, como habiamos anticipado, el termino $\delta_i^{L+1}$ aparece, por lo que podemos sustituir:
+
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1} $$
+
+De la seccion en la que te hable sobre el termino $\delta$, si $\delta_i^{L+1} = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$, entonces, la misma expresion para la capa $L$ deberia ser $ \delta_j^{L} = \frac{\partial \mathcal{L} }{\partial a_j^{L}} \cdot  \frac{\partial a_j^{L}}{\partial z_j^{L} } $, y como acabamos de obtener el segundo termino:
+
+$$ \delta_j^{L} = \left( \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1}  \right) \cdot f'(z_j^L)$$
+
+> Recuerda que la derivada de la activacion con respecto a una preactivacion (piensa en ella como un valor numerico) es sencillamente la derivada de la activacion evaluada en ese valor.
+
+Y al fin, hemos llegado a una de las expresiones mas bellas de las redes neuronales. 
+
+
 
 
 
