@@ -275,15 +275,15 @@ Sin embargo, en el proceso de *backprop* de todos los ejemplos de entrenamiento,
 Si has llegado hasta aqui y tienes todos los conceptos al dia. Ya estamos listos para adentrarnos en el problema sin preocuparnos discordancias de notacion. Vamos a ello!
 
 ---
-### Activaciones y Neuronas muertas
+### Los terminos del gradiente de un peso
 
 Bien, ya sabemos como fluyen los datos a traves de la red, de ida y vuelta. En la jerga del campo estos flujos son mas conocidos como **inferencia** (hacia adelante) y **entrenamiento** (hacia atras), los cuales estan intimamente relacionados porque uno depende del otro en una relacion secuencial. La inferencia de un paso afecta el entrenamiento del siguiente, y el entrenamiento del siguiente afecta la inferencia del proximo, y asi sucesivamente. 
 
-Pero vale la pena enfocarse particularmente en el algoritmo de entrenamiento, la retro-propagacion, que hace posible el "aprendizaje de la red", como ya vimos. 
+Pero vale la pena enfocarse particularmente en el algoritmo de entrenamiento, la retro-propagacion, que hace posible el "aprendizaje de la red", como te mencione. 
 
-Y es que, no es perfecto. O mas bien, existen algunos efectos secundarios de su implementacion que debemos considerar seriamente. 
+Pero para poder entender su comportamiento, debemos conocer como se relacionan entre si los terminos del gradiente. Y es que, poseen algunas problematicas que debemos considerar   
 
-> A partir de aqui nos sumergiremos en mucho terreno probabilistico, y podrias pensar que estos problemas son derivados de la entropia. Pero como veremos, no es asi, no ocurren por azar, sino por la naturaleza misma de las funciones que elegimos. Como dice el Merovingio de la saga Matrix: **"Donde otros ven casualidad, yo veo causalidad"**.
+> Podrias pensar que estos problemas son derivados de la entropia. Pero como veremos, no es asi, no ocurren por azar, sino por la naturaleza misma de las funciones que elegimos. Como dice el Merovingio de la saga Matrix: **"Donde otros ven casualidad, yo veo causalidad"**.
 
 Con nuestra derivada de la perdida con respecto a un peso en especifico:
 
@@ -503,14 +503,18 @@ Notese como, usando reglas de derivacion parcial, $ \frac{ \partial z_i^{L+1} }{
 
 $$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1} $$
 
-De la seccion en la que te hable sobre el termino $\delta$, si $\delta_i^{L+1} = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$, entonces, la misma expresion para la capa $L$ deberia ser $ \delta_j^{L} = \frac{\partial \mathcal{L} }{\partial a_j^{L}} \cdot  \frac{\partial a_j^{L}}{\partial z_j^{L} } $, y como acabamos de obtener el segundo termino:
+De la seccion en la que te hable sobre el termino $\delta$, si $\delta_i^{L+1} = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$, entonces, la misma expresion para la capa $L$ deberia ser $ \delta_j^{L} = \frac{\partial \mathcal{L} }{\partial a_j^{L}} \cdot  \frac{\partial a_j^{L}}{\partial z_j^{L} } $, y como acabamos de obtener el primer termino:
 
 $$ \delta_j^{L} = \left( \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1}  \right) \cdot f'(z_j^L)$$
 
-> Recuerda que la derivada de la activacion con respecto a una preactivacion (piensa en ella como un valor numerico) es sencillamente la derivada de la activacion evaluada en ese valor.
+> Recuerda como la derivada de la activacion con respecto a una preactivacion (piensa en ella como un valor numerico) es sencillamente la derivada de la activacion evaluada en ese valor, como ya habiamos visto.
 
-Y al fin, hemos llegado a una de las expresiones mas bellas de las redes neuronales. 
+Y al fin, hemos llegado a una de las expresiones mas bellas de las redes neuronales. Puedes ver como se llegamos a una expresion en donde $\delta$ aparece recursivamente, y lo hace de adelante hacia atras, resultando en que, los gradientes de las capas posteriores, infuyen en los gradientes de las capas anteiores, o dicho de otro modo, para calular un gradiente en la capa $L$, se requieren los gradientes de la capa $L+1, L+2, \cdots, L_k$, por estas razones, la propagacion hacia atras se llama como se llama.
 
+---
+### Activaciones y neuronas muertas
+
+Con todas las herramientas que hemos adquirido a traves de esta introduccion, estamos finalmente listos para plantearnos el problema con la formalidad que demanda. 
 
 
 
