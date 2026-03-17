@@ -516,9 +516,41 @@ Y al fin, hemos llegado a una de las expresiones mas bellas de las redes neurona
 
 Con todas las herramientas que hemos adquirido a traves de esta introduccion, estamos finalmente listos para plantearnos el problema con la formalidad que demanda. 
 
+Nuestro gradiente de un peso (con el cambio en la notacion de las capas que declaramos) es:
 
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \frac{\partial \mathcal{L} }{\partial a_i^{L}} \cdot \frac{\partial a_i^{L} }{\partial z_i^{L} } \cdot \frac{\partial z_i^{L} }{\partial w_{ij}^{L} }  $$
 
+Hemos derivado todos y cada uno de sus terminos:
 
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \delta_i^{L} \cdot  a_j^{L-1}$$
+
+> Habiamos dicho que solo ibamos a trabajar con la pareja $(L, L+1)$, pero este caso mencionar a $L-1$ es inevitable si queremos conservar el razonamiento en los siguientes capitulos.
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \left( \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1}  \right) \cdot f'(z_j^L) \cdot a_j^{L-1} $$
+
+De esta forma, hemos logrado reducir todas las incognitas a expresiones cuyo comportamiento podemos analizar, porque estan en funcion de los datos que si conocemos. Podemos hacer los siguientes razonaminetos:
+
+1. Es preciso cuidar los valores en los que oscilan las activaciones previas, porque influyen directamente en el gradiente de la capa posterior:
+
+- Si $a_j^{L-1} \to 0$, entonces $\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$.
+
+2. Es preciso cuidar la inicializacion y valores de los pesos en la red, sobre todo en entrenamiento, dado que el gradiente es proporcional al producto acumulado de los pesos a traves de las capas:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L+1}^{L_f} W^m$$
+
+> Recuerda que definimos $W^l$ como una notacion exclusiva de esta ciencia. Ademas, $L_f$ es la capa de salida.
+
+* De modo que a menores valores de los pesos en una capa, menor sera la magnitud del gradiente, y viceversa.
+
+3. Es preciso cuidar los valores que toman las activaciones posteriores, dado que el gradiente es proporcional al producto acumulado de las activaciones de las neuronas a traves de toda la red:
+
+$$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L}^{L_f} f'(z^{m})$$
+
+> No incluimos ningun subindice en $z^m$ para no generalizar los indices $i,j$ por toda la red, porque estamos hablando de un producto acumulado que tiene en cuenta mas de dos capas.
+
+* De modo que a menores valores de las derivdas de las activaciones, menores seran nuestros gradientes, y viceversa.
+
+Cualquiera de estas tres afirmaciones causara que $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$. Si el gradiente es 0, significa que el valor del peso no sera modificado y por lo tanto, **no se producira ningun aprendizaje en el perceptron**, sin importar si la funcion de perdida aun dicta que las predicciones son erroneas.
 
 
 
