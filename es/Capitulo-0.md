@@ -168,7 +168,7 @@ Como las activaciones de una capa son funciones de los pesos de la capa y de las
 
 Recordemos que **todos** los pesos a lo largo de la red son parametros entrenables, lo que quiere decir que su valor es alterable, a diferencia de los valores de entrada y los valores esperados, que no lo son. Por lo tanto, tratamos a la función de costo como una funcion cuyas unicas variables independientes son los pesos, ya que son los unicos valores que tenemos el poder de alterar para minimizar el error.
 
-Si agrupamos todos los pesos de una capa en una matriz que llamaremos $W^{(L)}$, en donde cada columna $i$ contenga los pesos de una neurona $i$. 
+Si agrupamos todos los pesos de una capa en una matriz que llamaremos $W^{(L)}$, en donde cada fila $i$ contenga los pesos de una neurona $i$. 
 Entonces podemos agrupar todos los pesos de la red neuronal de la siguiente manera:
 
 $$ \theta = \mathrm{\{W^{(l)}}\}_{l=1}^{k}  $$
@@ -229,7 +229,7 @@ Sea $f(x, y)$ donde $x = g(a)$ y $y = h(b)$, entonces:
 
 $$ \frac{\partial f}{\partial a} = \frac{\partial f}{\partial x} \cdot \frac{\partial x}{\partial a} $$ 
 
-$$ \frac{\partial f}{\partial a} = \frac{\partial f}{\partial y} \cdot \frac{\partial y}{\partial b} $$ 
+$$ \frac{\partial f}{\partial b} = \frac{\partial f}{\partial y} \cdot \frac{\partial y}{\partial b} $$ 
 
 > * Esta regla me encanta porque es muy intuitiva!. Nota como, si queremos encontrar la derivada de $f$ con respecto a $a$, vamos de lo mas grande a lo mas pequeño, primero encontramos $f$ con respecto a $x$ y luego $x$ con respecto a $a$. Simple!. 
 > * En la literatura, documentacion, codigo, y demas, podras encontrar los terminos de las derivadas en otro orden, porque la multiplicacion es conmutativa. 
@@ -469,7 +469,7 @@ Donde $m$ es el numero de neuronas de la capa $L$.
 
 > Si ya eres fluido con el Forward Pass, tal vez las anteriores expresiones te parezcan obvias, pero para poder entender el siguiente paso, es preciso destacar especificamente que $a_j^L$ esta presente en toda $z_i^{L+1}$.
 
-Por ultimo, la funcion de perdida, es funcion de todas las preactivaciones $ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $:
+Por ultimo, la funcion de perdida, es funcion (**indirectamente**) de todas las preactivaciones $ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $:
 
 $$ \mathcal{L}(z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1}) $$
 
@@ -485,7 +485,7 @@ Como siempre, el calculo nos saca de apuros. A diferencia de la regla de la cade
 
 Sea $g=f(a, b)$, $a=f_1(x)$ y $b=f_2(x)$, la derivada de $g$ con respecto a $x$ se obtiene de la siguiente manera:
 
-$$ \frac{ \partial g }{ \partial x } = \frac{ \partial g }{ \partial a } \cdot \frac{ \partial a }{ \partial x } + \frac{ \partial g }{ \partial b } \cdot \frac{ \partial b }{ \partial x }   $$
+$$ \frac{ dg }{ dx } = \frac{ \partial g }{ \partial a } \cdot \frac{ \partial a }{ \partial x } + \frac{ \partial g }{ \partial b } \cdot \frac{ \partial b }{ \partial x }   $$
 
 > * Esta regla de la cadena tambien es muy intuitiva!. Vamos de lo mas grande a  lo mas pequeño. 
 
@@ -542,7 +542,7 @@ $$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L+1}^{L_f}
 
 * De modo que a menores valores de los pesos en una capa, menor sera la magnitud del gradiente, y viceversa.
 
-3. Es preciso cuidar los valores que toman las activaciones posteriores, dado que el gradiente es proporcional al producto acumulado de las activaciones de las neuronas a traves de toda la red:
+3. Es preciso cuidar los valores que toman las activaciones posteriores, dado que el gradiente es proporcional al producto acumulado de las derivadas de las activaciones de las neuronas a traves de toda la red:
 
 $$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L}^{L_f} f'(z^{m})$$
 
