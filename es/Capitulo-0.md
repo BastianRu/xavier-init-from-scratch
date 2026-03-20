@@ -554,9 +554,9 @@ Si los valores de las derivadas de las activaciones, las activaciones previas y 
 
 A este fenomeno se le llama **desvanecimiento de gradientes** (*vanishing gradients*). 
 
-Si los valores de las derivadas de las activaciones, las activaciones previas y los pesos de una capa aumentan con cada paso a traves de las capas, entonces $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to \infty$. Si el gradiente es muy grande, el valor del peso sera modificado de manera masiva, causando que la funcion de perdida se aleje del minimo, con una mayor distancia por cada iteracion del entrenamiento, por lo que en este caso **tampoco se producira ningun aprendizaje en el perceptron**.
+Si los valores de las derivadas de las activaciones, las activaciones previas y los pesos de una capa aumentan con cada paso a traves de las capas, entonces $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to \infty$ (lo que tambien se conoce como "saturacion de neuronas"). Si el gradiente es muy grande, el valor del peso sera modificado de manera masiva, causando que la funcion de perdida se aleje del minimo, con una mayor distancia por cada iteracion del entrenamiento, por lo que en este caso, a la larga, **tampoco se producira ningun aprendizaje en el perceptron**.
 
-A este fenomeno se le llama **gradientes que explotan** (*exploding gradients*).
+A este fenomeno se le llama **saturacion de gradientes** (*exploding gradients*). O, traducido literalmente al español, gradientes que explotan.
 
 > Piensa otra vez en el ejemplo de la montaña. En el caso de desvanecimiento, imagina que con cada paso que das, cada vez avanzas menos y menos, hasta el punto en el que dejas de avanzar, jamas llegas a la cima. Por otro lado, en el caso contrario, con cada paso que das, cada vez avanzas una mayor distancia, y en algun punto, avanzas tanto, que te pasas  de la cima, y cuando intentas regresar, rebasas la cima de nuevo, pero terminas en un punto incluso mas alejado que la primera vez, terminas siendo incapaz de alcanzar la cima.
 
@@ -566,6 +566,7 @@ $$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}}\propto  \left( \prod_{m=L+1}
 
 Aunque esta expresión no debe interpretarse como una igualdad exacta en terminos escalares, refleja la estructura fundamental del gradiente: su dependencia de productos acumulados de pesos y derivadas de activacion a traves de las capas.
 
+Pero, ¿Como afrontar este problema?, ¿Podemos entonces alterar los pesos para solucionarlo?, ¿Como influyen las distribuciones normales? y ¿que hay de la "preservacion de la energia"?.
 
-
+Vamos a responder a estas y mas preguntas en el siguiente capitulo, donde introduciremos la **estadistica** como herramienta formal para abordar el problema. Ademas, veremos como nuestro objetivo sera lograr una "preservacion" de los rangos de valores en los que se pueden mover los pesos, de manera que evadamos los problemas de desvanecimiento o saturacion de gradientes lo maximo posible, haciendo posible conseguir un entrenamiento minimo deseado en la red.  
 
