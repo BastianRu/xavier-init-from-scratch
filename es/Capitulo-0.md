@@ -550,9 +550,21 @@ $$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L}^{L_f} f'
 
 * De modo que a menores valores de las derivdas de las activaciones, menores seran nuestros gradientes, y viceversa.
 
-Cualquiera de estas tres afirmaciones causara que $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$. Si el gradiente es 0, significa que el valor del peso no sera modificado y por lo tanto, **no se producira ningun aprendizaje en el perceptron**, sin importar si la funcion de perdida aun dicta que las predicciones son erroneas.
+Si los valores de las derivadas de las activaciones, las activaciones previas y los pesos de una capa se reducen con cada paso a traves de las capas, entonces $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$. Si el gradiente es 0, significa que el valor del peso no sera modificado y por lo tanto, **no se producira ningun aprendizaje en el perceptron**, sin importar si la funcion de perdida aun indica que existe un alto error.
 
+A este fenomeno se le llama **desvanecimiento de gradientes** (*vanishing gradients*). 
 
+Si los valores de las derivadas de las activaciones, las activaciones previas y los pesos de una capa aumentan con cada paso a traves de las capas, entonces $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to \infty$. Si el gradiente es muy grande, el valor del peso sera modificado de manera masiva, causando que la funcion de perdida se aleje del minimo, con una mayor distancia por cada iteracion del entrenamiento, por lo que en este caso **tampoco se producira ningun aprendizaje en el perceptron**.
+
+A este fenomeno se le llama **gradientes que explotan** (*exploding gradients*).
+
+> Piensa otra vez en el ejemplo de la montaña. En el caso de desvanecimiento, imagina que con cada paso que das, cada vez avanzas menos y menos, hasta el punto en el que dejas de avanzar, jamas llegas a la cima. Por otro lado, en el caso contrario, con cada paso que das, cada vez avanzas una mayor distancia, y en algun punto, avanzas tanto, que te pasas  de la cima, y cuando intentas regresar, rebasas la cima de nuevo, pero terminas en un punto incluso mas alejado que la primera vez, terminas siendo incapaz de alcanzar la cima.
+
+Si tomamos las 3 afirmaciones anteriores, y las colapsamos en una sola expresion que describa formalmente el problema:
+
+$$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}}\propto  \left( \prod_{m=L+1}^{L_f} W^m \right)  \left( \prod_{m=L}^{L_f} f'(z^{m}) \right) a_j^{L-1} $$
+
+Aunque esta expresión no debe interpretarse como una igualdad exacta en terminos escalares, refleja la estructura fundamental del gradiente: su dependencia de productos acumulados de pesos y derivadas de activacion a traves de las capas.
 
 
 
