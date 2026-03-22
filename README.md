@@ -42,3 +42,4 @@ I have designed this derivation to be as accessible as possible. However, to fol
 If you meet these requirements, we will build the rest here. We will define every new statistical property right before we need it for the next step of the proof. If you already master these concepts, feel free to skip directly to the sections of interest.
 
 
+[Chapter 0: The problem](https://bastianru.github.io/xavier-init-from-scratch/en/Chapter-0)
