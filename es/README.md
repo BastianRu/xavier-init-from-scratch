@@ -12,11 +12,11 @@ Este documento no es solo una explicación teórica; es una derivación desde ce
 
 Exploraremos el flujo de la red neuronal desde una perspectiva de preservación de la varianza. Dividiremos el estudio en tres grandes bloques:
 
-1. Los Cimientos: Definiciones intuitivas de variables aleatorias y por qué la varianza es nuestra mejor herramienta para medir la "salud" de una señal
+1. Los Cimientos (Capitulo 0): Definiciones intuitivas de variables aleatorias y por qué la varianza es nuestra mejor herramienta para medir la "salud" de una señal
 
-2. La Propagacion hacia adelante (Forward Pass): Cómo evitar que la información se desvanezca o explote mientras viaja desde la entrada hasta la predicción.
+2. La Propagacion hacia adelante (Capitulo 1): Cómo evitar que la información se desvanezca o explote mientras viaja desde la entrada hasta la predicción.
 
-3. La Propagacion hacia atrás (Backward Pass): La simetría oculta en el cálculo del error y cómo garantizar que el gradiente llegue vivo a las primeras capas de la red.
+3. La Propagacion hacia atrás (Capitulo 2): La simetría oculta en el cálculo del error y cómo garantizar que el gradiente llegue vivo a las primeras capas de la red.
 
 ---
 ### ¿Esto es para ti? (Nivel mínimo requerido)
@@ -32,7 +32,7 @@ He diseñado esta demostracion para que sea lo más accesible posible, pero para
 
 **Para el análisis del Backward pass:**
 
-- Cálculo Diferencial: Entender qué es una derivada y, especialmente, la regla de la cadena.
+- Cálculo Diferencial: Entender qué es una derivada.
 
 - Backpropagation: Una noción básica de cómo el error fluye hacia atrás en una red neuronal. (No te preocupes por las notaciones de las expresiones para los gradientes, cubriremos una introduccion de ello)
 

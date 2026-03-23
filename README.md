@@ -13,11 +13,11 @@ This document is more than just a theoretical explanation; it is a derivation fr
 
 We will explore the flow of a neural network from the perspective of variance preservation. The study is divided into three main blocks:
 
-  1. The Foundations: Intuitive definitions of random variables and why variance is our best tool for measuring a signal's "health."
+  1. The Foundations (Chapter 0): Intuitive definitions of random variables and why variance is our best tool for measuring a signal's "health."
 
-  2. The Forward Pass: How to prevent information from vanishing or exploding as it travels from input to prediction.
+  2. The Forward Pass (Chapter 1): How to prevent information from vanishing or exploding as it travels from input to prediction.
 
-  3. The Backward Pass: The hidden symmetry in error calculation and how to ensure the gradient reaches the early layers of the network alive.
+  3. The Backward Pass (Chapter 2): The hidden symmetry in error calculation and how to ensure the gradient reaches the early layers of the network alive.
 
 ---
 ### Is this for you? (Prerequisites)
@@ -33,7 +33,7 @@ I have designed this derivation to be as accessible as possible. However, to fol
 
 **For the Backward Pass analysis:**
 
-- Differential Calculus: Understanding what a derivative is and, especially, the Chain Rule.
+- Differential Calculus: Understanding what a derivative.
 
 - Backpropagation: A basic notion of how error flows backward through a network. (Don't worry about complex gradient notation; we will cover an introduction to it).
 
@@ -43,3 +43,4 @@ If you meet these requirements, we will build the rest here. We will define ever
 
 
 [Chapter 0: The problem](https://bastianru.github.io/xavier-init-from-scratch/en/Chapter-0)
+

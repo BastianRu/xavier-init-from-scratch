@@ -323,4 +323,244 @@ torch.tensor(2).tanh()
 # Output: tensor(0.9640)
 ```
 
+> in PyTorch, **tensors** are the fundamental structure, all values are represented through tensors. A tensor can represent scalars, vectors and matrices of any dimension.
 
+Notice how only **4 significant digits** are used. This has a lot of impact. Let us also see other examples:
+
+* $$ \tanh(5) \approx 0.99990920426 $$
+
+```python
+torch.tensor(5).tanh()
+# Output: tensor(0.9999)
+```
+> Since the fifth significant digit is 0, the rounding leaves the number at 0.9999.
+
+* $$\tanh(6) \approx 0.99998771165 $$
+
+```python
+torch.tensor(6).tanh()
+# Output: tensor(1.0000)
+```
+
+> However here, the fifth digit is 8, so the rounding approximates the number.
+
+In reality, these examples are only conceptual, so that you understand that there exists a limit in the capacity of machines to represent irrational numbers (like those produced by $\tanh$). The default **display** precision of PyTorch is 4 decimals, but it can be adjusted at discretion. The real limit is in the data type handled by tensors, which is `float32` (32 bits), which means that we would only have approximately 7 digits of precision for the activation values:
+
+* ```python
+  torch.set_printoptions(precision=10)
+  torch.tensor(9).tanh()
+  # Output: tensor(0.9999999404)
+  ```
+And
+
+* ```python
+  torch.set_printoptions(precision=10)
+  torch.tensor(10).tanh()
+  # Output: tensor(1.)
+  ```
+
+As shown, adjusting visual precision lets us see the digits that PyTorch normally hides, helping us differentiate values from absolute 1 or -1. However, this **is purely visual**: for an input of 10, the difference with 1 is so small that float32 runs out of capacity to represent it.
+
+Therefore, pre-activations with values of approximately 10 or more (or -10), translate into activations purely of 1 (or -1). In practice, this occurs often depending on the initialization of the weights. If these initial values are not controlled, the pre-activations tend to reach these extremes easily and even greater values in networks with many layers, we will see it in detail later, but for now, we will call "large" pre-activations values of approximately 10 or more, or approximately -10 or less.
+
+Let us remember the terms:
+
+* $$ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}} = \tanh(z_j^{L}) $$
+
+>Remember that: $ a_j^L = \tanh(z_j^L)$
+
+* $$ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }  = \tanh'(z_i^{L+1})  $$
+
+From the analyzed we can draw two conclusions:
+
+1. If the pre-activations $ z_j^{L} $ acquire large values, the terms $ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}}$ will be approximately 1 or -1. This means that if the pre-activations are very large, in the backward propagation process, at most, the only thing they will contribute will be a sign change to the gradient of the weights!. And the learning that a binary change contributes is quite precarious in many cases.
+
+> Careful, it does not always contribute only a sign change, this is only if the pre-activations are large enough, if they are not. It contributes a factor between 1 and -1 that multiplies the rest of the gradient.
+
+2. **The important one**: $$\tanh'(x) = 1 - \tanh^2(x)$$
+. If $ x \to \pm\infty $, then $\tanh'(x) \to 0$. But as we already saw, computationally, if the pre-activations $z_i^{L+1}$ tend to be large, the terms $ \frac{\partial a_i^{L+1} }{\partial z_i^{L+1} }$ will tend to 0!.
+
+Let us formalize these two rules for the extreme cases:
+
+   * If $ z_j^{L} \to \pm\infty$, then, $ \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1}} \to \pm1 $.
+
+   * If $z_i^{L+1} \to \pm\infty$, then $\frac{\partial a_i^{L+1} }     {\partial z_i^{L+1} } \to 0$.
+
+Excellent, we have analyzed the behavior of two of the three terms of the gradient for a weight of the network. But we still lack the most important one.
+
+#### Gradient propagation
+
+As we saw in previous sections, the gradient of a weight also depends on a third term. The derivative of the loss with respect to the activation of the present layer:
+
+$$ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $$
+
+As I mentioned to you previously, this term is calculated based on the chosen cost function. Since in this analysis we have represented $\mathcal{L}$ in a general way, it will not be necessary to know the derivative. However, there is an important fact to know about this term:
+
+$$ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \not\equiv  \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
+
+If $L+1$ is the last layer of the network, the derivative of the loss with respect to an activation in the same layer, is **structurally different** from the derivative of the loss with respect to an activation in the previous layer.
+
+> The symbol $\not \equiv$ means Non-Identity. If we used $\not=$ we would be saying that the values of both derivatives are not equal, which well you might think is true, because they are calculated differently, but it may happen that they end up coinciding in values, then the statement is contradicted. With $\not\equiv$ we indicate that the **nature of both expressions is different**, even if they come to acquire similar values.
+
+Since in the last layer of the network the loss function is a function of the final activations of the network, the derivative only depends on those last activations and therefore is obtained directly by applying differentiation rules. Nevertheless, if it is required to know the same derivative for one of the activations in the intermediate layers, as concerns us in this article, the calculation changes.
+
+In other words, the derivative $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ is calculated differently depending on whether $L+1$ is the last layer of the network, or not.
+
+As we did during the *Forward Pass*, we will continue reasoning about the pair of layers $(L,L+1)$. To maintain this convention, we will analyze the derivative of the loss with respect to the activations of layer $L$:
+
+$$ \frac{\partial \mathcal{L} }{\partial a_j^{L}} $$
+
+Here we will assume that $L$ represents an intermediate layer of the network. Consequently, the layer $L+1$ can be another intermediate layer or even the output layer.
+
+> We could have decided to study the derivative $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$. However, this would force us to impose that $L+1$ is not the output layer, since in that case the expression would be immediate. <br><br>
+Instead by working with $\frac{\partial \mathcal{L} }{\partial a_j^{L}} $ we can keep our convention intact. Besides, this reflects better the behavior of backward propagation, where the flow is from back to front:
+> > Forward Pass:         $L  \to  L+1$ <br>
+> > Backward Pass:       $L  \gets  L+1$
+
+Good, with this assumption in mind, $\frac{\partial \mathcal{L} }{\partial a_j^{L}}$ is special because here resides the so-called concept of gradient propagation (*gradient propagation*). And it is that, the nature of the chain rule makes the calculation of gradients recursive. This property allows reusing intermediate calculations when propagating the gradient backward in the network, which enormously reduces the computational cost of training.
+
+---
+**The term** $\delta$
+
+Before moving on to the calculation of that expression, I consider it prudent to introduce another notation with which we are going to work and that you will very probably find in related material.
+
+As we already saw $ \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} $ tells us that the loss is a function of the activation $a_i^{L+1}$. And $a_i^{L+1}$ is a function of $z_i^{L+1}$. This means that we can find the derivative of the loss with respect to $z_i^{L+1}$, so let us apply the chain rule again:
+
+$$ \frac{\partial \mathcal{L}}{\partial z_i^{L+1} } = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} } $$
+
+This term is particular because it will appear recursively (as we will see shortly). Therefore, in the literature, the following special notation was given to it:
+
+$$\delta_i^{L+1} \equiv \frac{\partial \mathcal{L}}{\partial z_i^{L+1} }  $$
+
+Now, notice how $\frac{\partial \mathcal{L} }{\partial a_i^{L+1}}$ and $\frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$ appear in $\frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}}$. So we can substitute expressions:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot \frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1} } $$
+
+We already saw that $\frac{\partial z_i^{L+1} }{\partial w_{ij}^{L+1} } = a_j^L $, then:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L+1}} = \delta_i^{L+1} \cdot a_j^L $$
+
+> Here is another definition of the gradient of a weight with which you could run into in your learning.
+
+---
+
+Let us highlight an important fact inside forward propagation:
+
+Because of how pre-activation is defined, a single activation $a_j$ in layer $L$ **will influence all** the activations $a_i$ that exist in layer $L+1$. Which means that any change in one $a_j^L$ will affect each and every one of the activations $a_i^{L+1}$
+
+Since $a_i^{L+1}$ = $f(z_i^{L+1})$ [$f=\tanh]$, then a single $a_j^L$ influences all the pre-activations of the next layer:
+
+$$ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $$
+
+Said in another way, all the pre-activations $z_i$ of layer $L+1$ are functions (among other variables) of the activation $a_j$ of layer $L$, formally written:
+
+$$ z_1^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$ <br>
+$$ z_2^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$  <br>
+$$ z_3^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L)$$ <br>
+$$ \vdots $$  <br>
+$$ z_n^{L+1}(a_1^L, \cdots, a_j^L , \cdots, a_m^L) $$
+
+Where $m$ is the number of neurons in layer $L$.
+
+> If you are already fluent with the Forward Pass, maybe the previous expressions seem obvious to you, but to be able to understand the next step, it is necessary to specifically highlight that $a_j^L$ is present in all $z_i^{L+1}$.
+
+Finally, the loss function is a function (**indirectly**) of all the pre-activations $ z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1} $:
+
+$$ \mathcal{L}(z_1^{L+1}, z_2^{L+1}, z_3^{L+1}, \cdots, z_n^{L+1}) $$
+
+> The loss function is a function of the final activations but these also depend on previous activations and pre-activations, regardless of whether $L+1$ is the last layer or not.
+
+**The total chain rule**
+
+Previously we had already seen how the chain rule allowed us to calculate derivatives of functions that had intermediate variables that depended in turn on other variables. Usually it is only called chain rule, plainly, but its full name is **multivariable chain rule**, and it is like that because it is used only in multivariable functions.
+
+However, in this case, things are somewhat different. We are supposed to be trying to find the term $\frac{\partial \mathcal{L} }{\partial a_j^{L}}$, that is how much $\mathcal{L}$ changes when $a_j^L$ changes. But, how do we calculate it, if a single change in $a_j^{L}$ causes a change in all the $z_i^{L+1}$ which in turn **all** cause a change in $\mathcal{L}$?
+
+As always, calculus gets us out of trouble. Unlike the multivariable chain rule, the **total chain rule** helps us differentiate cases like this, where a function of interest, in this case $\mathcal{L}$ is affected by a variable (for the case $a_j^{L}$) through several paths, or several intermediate functions.
+
+Let $g=f(a, b)$, $a=f_1(x)$ and $b=f_2(x)$, the derivative of $g$ with respect to $x$ is obtained in the following way:
+
+$$ \frac{ dg }{ dx } = \frac{ \partial g }{ \partial a } \cdot \frac{ \partial a }{ \partial x } + \frac{ \partial g }{ \partial b } \cdot \frac{ \partial b }{ \partial x }   $$
+
+> * This chain rule is also very intuitive!. We go from the biggest to the smallest.
+
+Each addend in the expression is known as a **contribution** (similar to the contributions in the integral), a name that makes a lot of sense, since each one contributes its own information of how $x$ produces changes in $g$.
+
+Translating this logic to where we are interested, taking into account the dependencies mentioned before:
+
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \frac{ \partial \mathcal{L} }{\partial z_1^{L+1}} \cdot \frac{ \partial z_1^{L+1} }{\partial a_j^L} + \frac{ \partial \mathcal{L} }{\partial z_2^{L+1}} \cdot \frac{ \partial z_2^{L+1} }{\partial a_j^L} + \cdots + \frac{ \partial \mathcal{L} }{\partial z_n^{L+1}} \cdot \frac{ \partial z_n^{L+1} }{\partial a_j^L}  $$
+
+Since the structure of the derivative goes through all the pre-activations of layer $L+1$, then the expression is simplifiable by summation:
+
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \sum_{i=1}^{n_{L+1}} \frac{ \partial \mathcal{L} }{\partial z_i^{L+1}} \cdot \frac{ \partial z_i^{L+1} }{\partial a_j^L}  $$
+
+Notice how, using partial differentiation rules, $ \frac{ \partial z_i^{L+1} }{\partial a_j^L} = w_{ij}^{L+1}$ (similar to what happens with $\frac{\partial z_i^{L+1}}{\partial w_{ij}^{L+1}}). $ Also, as we had anticipated, the term $\delta_i^{L+1}$ appears, so we can substitute:
+
+$$ \frac{ \partial \mathcal{L} }{\partial a_j^L} = \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1} $$
+
+From the section where I talked to you about the term $\delta$, if $\delta_i^{L+1} = \frac{\partial \mathcal{L} }{\partial a_i^{L+1}} \cdot  \frac{\partial a_i^{L+1}}{\partial z_i^{L+1} }$, then, the same expression for layer $L$ should be $ \delta_j^{L} = \frac{\partial \mathcal{L} }{\partial a_j^{L}} \cdot  \frac{\partial a_j^{L}}{\partial z_j^{L} } $, and since we just obtained the first term:
+
+$$ \delta_j^{L} = \left( \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1}  \right) \cdot f'(z_j^L)$$
+
+> Remember how the derivative of the activation with respect to a pre-activation (think of it as a numeric value) is simply the derivative of the activation evaluated at that value, as we had already seen.
+
+And finally, we have arrived at one of the most beautiful expressions of neural networks. You can see how we arrived at an expression where $\delta$ appears recursively, and it does so from forward to backward, resulting in that, the gradients of later layers influence the gradients of earlier layers, or said in another way, to calculate a gradient in layer $L$, the gradients of layer $L+1, L+2, \cdots, L_k$ are required, for these reasons, backward propagation is called as it is called.
+
+---
+### Activations and dead neurons
+
+With all the tools that we have acquired through this introduction, we are finally ready to pose the problem with the formality it demands.
+
+Our gradient of a weight (with the change in the layer notation that we declared) is:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \frac{\partial \mathcal{L} }{\partial a_i^{L}} \cdot \frac{\partial a_i^{L} }{\partial z_i^{L} } \cdot \frac{\partial z_i^{L} }{\partial w_{ij}^{L} }  $$
+
+We have derived each and every one of its terms:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \delta_i^{L} \cdot  a_j^{L-1}$$
+
+> We had said that we were only going to work with the pair $(L, L+1)$, but in this case mentioning $L-1$ is inevitable if we want to preserve the reasoning in the following chapters.
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} = \left( \sum_{i=1}^{n_{L+1}} \delta_i^{L+1} \cdot w_{ij}^{L+1}  \right) \cdot f'(z_j^L) \cdot a_j^{L-1} $$
+
+In this way, we have managed to reduce all the unknowns to expressions whose behavior we can analyze, because they are in function of the data that we do know. We can make the following reasonings:
+
+1. It is necessary to take care of the values in which the previous activations oscillate, because they directly influence the gradient of the next layer:
+
+- If $a_j^{L-1} \to 0$, then $\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$.
+
+2. It is necessary to take care of the initialization and values of the weights in the network, especially in training, since the gradient is proportional to the accumulated product of the weights through the layers:
+
+$$ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L+1}^{L_f} W^m$$
+
+> Remember that we defined $W^l$ as a notation exclusive to this science. Besides, $L_f$ is the output layer.
+
+* So that the smaller the values of the weights in a layer, the smaller the magnitude of the gradient will be, and vice versa.
+
+3. It is necessary to take care of the values that the later activations take, since the gradient is proportional to the accumulated product of the derivatives of the activations of the neurons through the whole network:
+
+$$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \propto \prod_{m=L}^{L_f} f'(z^{m})$$
+
+> We do not include any subindex in $z^m$ so as not to generalize the indices $i,j$ through the whole network, because we are talking about an accumulated product that takes into account more than two layers.
+
+* So that the smaller the values of the derivatives of the activations, the smaller our gradients will be, and vice versa.
+
+If the values of the derivatives of the activations, the previous activations and the weights of a layer reduce with each step through the layers, then $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to 0$ (which is also known as "neuron saturation"). If the gradient is 0, it means that the value of the weight will not be modified and therefore, **no learning will be produced in the perceptron**, no matter if the loss function still indicates that there exists a high error.
+
+This phenomenon is called **vanishing gradients** (*vanishing gradients*).
+
+If the values of the derivatives of the activations, the previous activations and the weights of a layer increase with each step through the layers, then $ \frac{\partial \mathcal{L} }{\partial w_{ij}^{L}} \to \infty$. If the gradient is very large, the value of the weight will be modified massively, causing the loss function to move away from the minimum, with a greater distance in each training iteration, so in this case, in the long run, **no learning will be produced in the perceptron either**.
+
+This phenomenon is called **exploding gradients** (*exploding gradients*).
+
+> Think again about the mountain example. In the vanishing case, imagine that with each step you take, each time you advance less and less, until the point where you stop advancing, you never reach the summit. On the other hand, in the opposite case, with each step you take, each time you advance a greater distance, and at some point, you advance so much, that you pass the summit, and when you try to return, you overshoot the summit again, but you end up at a point even farther than the first time, you end up being incapable of reaching the summit.
+
+If we take the 3 previous statements, and collapse them into a single expression that formally describes the problem:
+
+$$\frac{\partial \mathcal{L} }{\partial w_{ij}^{L}}\propto  \left( \prod_{m=L+1}^{L_f} W^m \right)  \left( \prod_{m=L}^{L_f} f'(z^{m}) \right) a_j^{L-1} $$
+
+Although this expression should not be interpreted as an exact equality in scalar terms, it reflects the fundamental structure of the gradient: its dependence on accumulated products of weights and activation derivatives through the layers.
+
+But, how to face this problem?, Can we then alter the weights to solve it?, How do normal distributions influence? and what about "energy preservation"?.
+
+We are going to answer these and more questions in the next chapter, where we will introduce **statistics** as a formal tool to address the problem. Besides, we will see how our objective will be to achieve a "preservation" of the ranges of values in which the weights can move, so that we avoid the problems of vanishing or gradient explosion as much as possible, making it possible to achieve a minimum desired training in the network.
