@@ -564,3 +564,5 @@ Although this expression should not be interpreted as an exact equality in scala
 But, how to face this problem?, Can we then alter the weights to solve it?, How do normal distributions influence? and what about "energy preservation"?.
 
 We are going to answer these and more questions in the next chapter, where we will introduce **statistics** as a formal tool to address the problem. Besides, we will see how our objective will be to achieve a "preservation" of the ranges of values in which the weights can move, so that we avoid the problems of vanishing or gradient explosion as much as possible, making it possible to achieve a minimum desired training in the network.
+
+

@@ -16,7 +16,7 @@ Exploraremos el flujo de la red neuronal desde una perspectiva de preservación 
 
 2. La Propagacion hacia adelante (Capitulo 1): Cómo evitar que la información se desvanezca o explote mientras viaja desde la entrada hasta la predicción.
 
-3. La Propagacion hacia atrás (Capitulo 2): La simetría oculta en el cálculo del error y cómo garantizar que el gradiente llegue vivo a las primeras capas de la red.
+3. La Propagacion hacia atrás (Capitulo 1): La simetría oculta en el cálculo del error y cómo garantizar que el gradiente llegue vivo a las primeras capas de la red.
 
 ---
 ### ¿Esto es para ti? (Nivel mínimo requerido)
